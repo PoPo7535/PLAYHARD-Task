@@ -1,3 +1,4 @@
+// using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class Test : MonoBehaviour
@@ -8,8 +9,10 @@ public class Test : MonoBehaviour
         grid.GetCellCenterLocal(Vector3Int.zero);
     }
 
-    void Update()
+    // [Button]
+    public void Foo(Vector3Int vector3Int)
     {
-        
+        grid.GetCellCenterLocal(vector3Int);
+        grid.GetCellCenterWorld(vector3Int);
     }
 }
