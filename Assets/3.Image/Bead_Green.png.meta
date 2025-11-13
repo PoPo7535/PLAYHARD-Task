@@ -3,8 +3,8 @@ guid: a0edbbc730f52d94ab58cd7f084b27f0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1853463772222417503
-    second: transparent_rgb_1.0_1.5_1.0_0
+      213: 5982652527426093847
+    second: Bead_Green_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: transparent_rgb_1.0_1.5_1.0_0
+      name: Bead_Green_0
       rect:
         serializedVersion: 2
         x: 25
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1a590ace48c2746e0800000000000000
-      internalID: -1853463772222417503
+      spriteID: 71343d7b6c6a60350800000000000000
+      internalID: 5982652527426093847
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      transparent_rgb_1.0_1.5_1.0_0: -1853463772222417503
+      Bead_Green_0: 5982652527426093847
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: c6f8c6a9d18f26143803298f0cc8dbe7
+guid: a309e215b29470149a2422c9b51b4645
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8811086383913878809
-    second: transparent_rgb_1.5_1.0_1.0_0
+      213: 3748922670104814537
+    second: Bead_Purple_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: transparent_rgb_1.5_1.0_1.0_0
+      name: Bead_Purple_0
       rect:
         serializedVersion: 2
         x: 25
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 915c77e0264474a70800000000000000
-      internalID: 8811086383913878809
+      spriteID: 9c3a10a4e49d60430800000000000000
+      internalID: 3748922670104814537
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      transparent_rgb_1.5_1.0_1.0_0: 8811086383913878809
+      Bead_Purple_0: 3748922670104814537
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
