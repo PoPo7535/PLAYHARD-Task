@@ -5,22 +5,22 @@ using UnityEngine.UI;
 using Serial = UnityEngine.SerializeField;
 public class Bubble : SerializedMonoBehaviour, IBubble
 {
-    [Serial] private Dictionary<BeadType, Sprite> _typeSprites = new();
-    [Serial] private BeadType _myType;
+    [Serial] private Dictionary<BubbleType, Sprite> _typeSprites = new();
+    [Serial] private BubbleType _myType;
     [Serial] private SpriteRenderer _spriteRenderer;
     
-    public void SetType(BeadType type)
+    public void SetType(BubbleType type)
     {
         _myType = type;
         _spriteRenderer.sprite = _typeSprites[type];
     }
-    public void GetDamage(BeadType type)
+    public void GetDamage(BubbleType type)
     {
     }
 }
 
 
-public enum BeadType
+public enum BubbleType
 {
     White,
     Yellow,
