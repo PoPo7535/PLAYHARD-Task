@@ -4,18 +4,9 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    public Grid grid;
-    private HexagonGrid hexList = new();
+    public HexagonGrid hexList;
     void Start()
     {
-        grid.GetCellCenterLocal(Vector3Int.zero);
         hexList.AddHexLine(10);
-    }
-
-    [Button]
-    public void Foo(Vector3Int vector3Int)
-    {
-        Debug.Log(grid.GetCellCenterLocal(vector3Int));
-        Debug.Log(grid.GetCellCenterWorld(vector3Int));
     }
 }
