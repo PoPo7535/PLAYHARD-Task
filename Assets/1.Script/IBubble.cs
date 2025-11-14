@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface IBead
+public interface IBubble
 {
     void GetDamage(BeadType type);
 }

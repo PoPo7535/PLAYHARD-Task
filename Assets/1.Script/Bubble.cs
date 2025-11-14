@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 using Serial = UnityEngine.SerializeField;
-public class Bead : SerializedMonoBehaviour, IBead
+public class Bubble : SerializedMonoBehaviour, IBubble
 {
     [Serial] private Dictionary<BeadType, Sprite> _typeSprites = new();
     [Serial] private BeadType _myType;
