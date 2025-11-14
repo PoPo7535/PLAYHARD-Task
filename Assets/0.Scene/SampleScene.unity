@@ -489,6 +489,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewDis: 10
   viewAngle: 90
+  test:
+  - {fileID: 0}
+  - {fileID: 0}
   showGizmos: 1
 --- !u!1 &519420028
 GameObject:
@@ -686,7 +689,7 @@ GameObject:
   - component: {fileID: 1126121848}
   m_Layer: 0
   m_Name: DeadZone
-  m_TagString: Untagged
+  m_TagString: DeadZone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -799,7 +802,7 @@ GameObject:
   - component: {fileID: 1143502328}
   m_Layer: 0
   m_Name: Right Wall
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -877,7 +880,7 @@ GameObject:
   - component: {fileID: 1156317127}
   m_Layer: 0
   m_Name: Left Wall
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1090,7 +1093,7 @@ GameObject:
   - component: {fileID: 1776842774}
   m_Layer: 0
   m_Name: DeadZone
-  m_TagString: Untagged
+  m_TagString: DeadZone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
