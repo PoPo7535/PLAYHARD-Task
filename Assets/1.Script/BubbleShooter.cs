@@ -10,26 +10,24 @@ using Vector3 = UnityEngine.Vector3;
 public class BubbleShooter : MonoBehaviour
 {
     public LineParticle lineParticle;
-    
+    public HexagonGrid grid;
     private int _segments = 5;  
     public float viewDis = 10f;
     public float viewAngle = 90f;
 
     public void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) ||
+            Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
-            Shooter();
-            Vector2 worldPos = GetPointerWorldPosition();
-            Debug.Log("Clicked at: " + worldPos);
+            var hit = Shooter();
+            if (hit[1].transform.CompareTag("Bubble"))
+            {
+                Debug.Log(grid.GetHitPointToCell(hit[1]));
+            }
         }
         // 모바일 터치 시작
-        else if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-        {
-            Shooter();
-            Vector2 worldPos = GetPointerWorldPosition();
-            Debug.Log("Touched at: " + worldPos);
-        }
+
     }
 
     [Button]
@@ -54,6 +52,11 @@ public class BubbleShooter : MonoBehaviour
         lineParticle.SetPosition(1, result[0].point);
         lineParticle.SetPosition(2, result[1].point);
         return result;
+    }
+
+    private void DrawLine()
+    {
+        
     }
 
     private Vector2 GetPointerWorldPosition()

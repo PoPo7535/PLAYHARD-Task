@@ -8,7 +8,7 @@ public class HexagonGrid : MonoBehaviour
 {
     private const int FirstLineCount = 11;
     private const int ScendLineCount = 10;
-    public Bubble bubbleOBj;
+    public Bubble bubbleObj;
     public Grid grid;
     private readonly List<Bubble[]> _hexList = new();
 
@@ -25,15 +25,18 @@ public class HexagonGrid : MonoBehaviour
     {
         var pos = GetGridPosition(line, index);
         if (bubble.IsUnityNull())
-            bubble = Instantiate(bubbleOBj);
+            bubble = Instantiate(bubbleObj);
         bubble.transform.position = pos;
         _hexList[line][index] = bubble;
         
     }
-[Button]
-    public void Test(Vector3 pos)
+    public Vector3 GetHitPointToCell(RaycastHit2D hit)
     {
-        Debug.Log(grid.LocalToCell(pos));
+        var localPos = new Vector3(
+            hit.point.x,
+            hit.point.y - (grid.cellSize.y / 2));
+        var vector3 = grid.WorldToCell(localPos);
+        return vector3;
     }
     public Vector3 GetGridPosition(Vector3Int position)
     {
