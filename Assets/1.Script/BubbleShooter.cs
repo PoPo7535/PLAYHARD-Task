@@ -15,6 +15,7 @@ public class BubbleShooter : MonoBehaviour
     public float viewDis = 10f;
     public float viewAngle = 90f;
 
+
     public void Update()
     {
         if (Input.GetMouseButtonDown(0) ||
@@ -23,7 +24,7 @@ public class BubbleShooter : MonoBehaviour
             var hit = Shooter();
             if (hit[1].transform.CompareTag("Bubble"))
             {
-                Debug.Log(grid.GetHitPointToCell(hit[1]));
+                // target.transform.position = grid.GetGridPosition(grid.GetHitPointToCell(hit[1]));
             }
         }
         // 모바일 터치 시작

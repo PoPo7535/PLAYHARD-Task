@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 300d1e534b4de144c94c9fe546592431
+guid: 75b40a0a3dd81a84391e31ec236a3785
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7322313835821862964
-    second: Bead_White_0
+      213: -1763975200906863328
+    second: ball_yellow_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 65
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Bead_White_0
+      name: ball_yellow_0
       rect:
         serializedVersion: 2
-        x: 25
+        x: 0
         y: 0
-        width: 463
-        height: 454
+        width: 67
+        height: 67
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 430171e63a51e9560800000000000000
-      internalID: 7322313835821862964
+      spriteID: 02d195596e91587e0800000000000000
+      internalID: -1763975200906863328
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Bead_White_0: 7322313835821862964
+      ball_yellow_0: -1763975200906863328
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

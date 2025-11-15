@@ -18,18 +18,13 @@ public class Bubble : SerializedMonoBehaviour, IBubble
     public void GetDamage(BubbleType type)
     {
     }
-    private ObjectPool<Bubble> pool;
-    public void Init(ObjectPool<Bubble> pool)
-    {
-        this.pool = pool;
-    }
 
 }
 
 
 public enum BubbleType
 {
-    White,
+    Bule,
     Yellow,
     Red,
     Green,

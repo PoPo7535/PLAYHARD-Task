@@ -22,7 +22,7 @@ namespace Utility
 				{
 					if (_I == null)
 					{
-						var all = FindObjectsOfType<T>();
+						var all = FindObjectsByType<T>(FindObjectsSortMode.None);
 						_I = all != null && all.Length > 0 ? all[0] : null;
 
 						if (all != null && all.Length > 1)
@@ -75,7 +75,8 @@ namespace Utility
 				{
 					if (_I == null)
 					{
-						var all = FindObjectsOfType<T>();
+						var all = FindObjectsByType<T>(FindObjectsSortMode.None);
+
 						_I = all != null && all.Length > 0 ? all[0] : null;
 
 						if (all != null && all.Length > 1)
@@ -124,7 +125,7 @@ namespace Utility
 				{
 					if (_I == null)
 					{
-						var all = FindObjectsOfType<T>();
+						var all = FindObjectsByType<T>(FindObjectsSortMode.None);
 						_I = all != null && all.Length > 0 ? all[0] : null;
 
 						if (all != null && all.Length > 1)

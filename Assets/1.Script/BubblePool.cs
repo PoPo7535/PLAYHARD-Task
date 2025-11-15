@@ -4,14 +4,14 @@ using Utility;
 
 public class BubblePool : Singleton<BubblePool>
 {
-    private ObjectPool<Bubble> bulletPool;
+    public  ObjectPool<Bubble> Pool { get; private set; }
+
     public Bubble _bulletPrefab;
     public void Awake()
     {
-        bulletPool = new ObjectPool<Bubble>(
+        Pool = new ObjectPool<Bubble>(
             createFunc: () => {
                 var bubble = Instantiate(_bulletPrefab);
-                bubble.Init(bulletPool);
                 return bubble;
             },
             actionOnGet: (bullet) => {
