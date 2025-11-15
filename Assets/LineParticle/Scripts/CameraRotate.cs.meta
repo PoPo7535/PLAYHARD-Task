@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 2261df6825979a54ba27c8f93bb90a08
+timeCreated: 1461896830
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 61756
+  packageName: LineParticle 1.0
+  packageVersion: 1.0
+  assetPath: Assets/LineParticle/Scripts/CameraRotate.cs
+  uploadId: 117860

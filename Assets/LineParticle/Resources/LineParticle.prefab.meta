@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2cc0dec26c985274c8aaaa6ca171de42
+timeCreated: 1461896154
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 61756
+  packageName: LineParticle 1.0
+  packageVersion: 1.0
+  assetPath: Assets/LineParticle/Resources/LineParticle.prefab
+  uploadId: 117860

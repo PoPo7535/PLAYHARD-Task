@@ -9,12 +9,29 @@ using Vector3 = UnityEngine.Vector3;
 
 public class BubbleShooter : MonoBehaviour
 {
+    public LineParticle lineParticle;
+    
+    private int _segments = 5;  
     public float viewDis = 10f;
     public float viewAngle = 90f;
-    private int segments = 5;         // 라인 분해도
 
-    public GameObject[] test;
-    
+    public void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Shooter();
+            Vector2 worldPos = GetPointerWorldPosition();
+            Debug.Log("Clicked at: " + worldPos);
+        }
+        // 모바일 터치 시작
+        else if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        {
+            Shooter();
+            Vector2 worldPos = GetPointerWorldPosition();
+            Debug.Log("Touched at: " + worldPos);
+        }
+    }
+
     [Button]
     public RaycastHit2D[] Shooter()
     {
@@ -23,19 +40,19 @@ public class BubbleShooter : MonoBehaviour
         var screenPos = GetPointerWorldPosition();
         var dir = (screenPos - (Vector2)transform.position).normalized;
         
-        // 각도확인
         if (Vector3.Angle(transform.forward, dir) < viewAngle / 2f)
             return null;
 
-        result[0] = Physics2D.Raycast(transform.position, dir, viewDis);
+        result[1] = result[0] = Physics2D.Raycast(transform.position, dir, viewDis);
         if (result[0].transform.CompareTag("Wall"))
         {
             var point = result[0].point - (dir * 0.01f);
             dir = Vector3.Reflect(dir, result[0].normal);
             result[1] = Physics2D.Raycast(point, dir, viewDis);
         }
-        test[0].transform.position = result[0].point;
-        test[1].transform.position = result[1].point;
+        lineParticle.SetPosition(0, transform.position);
+        lineParticle.SetPosition(1, result[0].point);
+        lineParticle.SetPosition(2, result[1].point);
         return result;
     }
 
@@ -43,10 +60,8 @@ public class BubbleShooter : MonoBehaviour
     {
         Vector2 screenPos;
 
-        // PC 마우스
         if (Input.touchCount == 0)
             screenPos = Input.mousePosition;
-        // 모바일 터치
         else
             screenPos = Input.GetTouch(0).position;
 
@@ -62,7 +77,7 @@ public class BubbleShooter : MonoBehaviour
         Gizmos.color = Color.blue;
 
         Vector2 origin = transform.position;
-        var step = viewAngle / segments;
+        var step = viewAngle / _segments;
 
         // 각도 시작 = -viewAngle/2
         var prevPoint = origin + DirFromAngle(-viewAngle / 2) * viewDis;
@@ -72,7 +87,7 @@ public class BubbleShooter : MonoBehaviour
         Gizmos.DrawLine(origin, origin + DirFromAngle(viewAngle / 2) * viewDis);
 
         // 원호 그리기
-        for (int i = 1; i <= segments; ++i)
+        for (int i = 1; i <= _segments; ++i)
         {
             var curAngle = -viewAngle / 2 + step * i;
             var nextPoint = origin + DirFromAngle(curAngle) * viewDis;

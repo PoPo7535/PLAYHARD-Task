@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: b759c26ad0dd3bc44b80dc6f816badd4
+labels:
+- LineParticle
+timeCreated: 1461895993
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 61756
+  packageName: LineParticle 1.0
+  packageVersion: 1.0
+  assetPath: Assets/LineParticle/LineDemo.unity
+  uploadId: 117860
