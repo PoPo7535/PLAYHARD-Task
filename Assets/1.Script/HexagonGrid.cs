@@ -1,11 +1,14 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using Sirenix.OdinInspector;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class HexagonGrid : MonoBehaviour
 {
     private const int FirstLineCount = 11;
     private const int ScendLineCount = 10;
+    public Bubble bubbleOBj;
     public Grid grid;
     private readonly List<Bubble[]> _hexList = new();
 
@@ -13,12 +16,25 @@ public class HexagonGrid : MonoBehaviour
     {
         for (int i = 0; i < lineCount; ++i)
         {
-            var line = _hexList.Count % 2;
-            _hexList.Add(line == 0 ? new Bubble[FirstLineCount] : new Bubble[ScendLineCount]);
+            var isFirstLine = 0 == (_hexList.Count % 2);
+            _hexList.Add(isFirstLine ? new Bubble[FirstLineCount] : new Bubble[ScendLineCount]);
         }
     }
 
-    [Button]
+    public void SetBubble(Bubble bubble, int line, int index)
+    {
+        var pos = GetGridPosition(line, index);
+        if (bubble.IsUnityNull())
+            bubble = Instantiate(bubbleOBj);
+        bubble.transform.position = pos;
+        _hexList[line][index] = bubble;
+        
+    }
+[Button]
+    public void Test(Vector3 pos)
+    {
+        Debug.Log(grid.LocalToCell(pos));
+    }
     public Vector3 GetGridPosition(Vector3Int position)
     {
         var error = CheckError(position.x, position.y);
@@ -28,10 +44,19 @@ public class HexagonGrid : MonoBehaviour
         vector3.y *= -1;
         return vector3;
     }
-
-    private bool CheckError(int lineCount, int index)
+    public Vector3 GetGridPosition(int line, int index)
     {
-        var first = lineCount % 2 == 0;
+        var error = CheckError(line, index);
+        if (error)
+            return Vector3.zero;
+        var vector3 = grid.GetCellCenterLocal(new Vector3Int(line, index, 1));
+        vector3.y *= -1;
+        return vector3;
+    }
+
+    private bool CheckError(int line, int index)
+    {
+        var first = line % 2 == 0;
         if (first && index < FirstLineCount)
         {
             Debug.LogError("범위 오류");
