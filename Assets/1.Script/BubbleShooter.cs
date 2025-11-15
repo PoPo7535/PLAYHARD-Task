@@ -41,7 +41,7 @@ public class BubbleShooter : MonoBehaviour
         if (Vector3.Angle(transform.forward, dir) < viewAngle / 2f)
             return null;
 
-        result[1] = result[0] = Physics2D.Raycast(transform.position, dir, viewDis);
+        result[1] = result[0] = Physics2D.CircleCast(transform.position, 0.07f, dir, viewDis);
         if (result[0].transform.CompareTag("Wall"))
         {
             var point = result[0].point - (dir * 0.01f);

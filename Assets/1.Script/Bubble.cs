@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Pool;
 using UnityEngine.UI;
 using Serial = UnityEngine.SerializeField;
 public class Bubble : SerializedMonoBehaviour, IBubble
@@ -17,6 +18,12 @@ public class Bubble : SerializedMonoBehaviour, IBubble
     public void GetDamage(BubbleType type)
     {
     }
+    private ObjectPool<Bubble> pool;
+    public void Init(ObjectPool<Bubble> pool)
+    {
+        this.pool = pool;
+    }
+
 }
 
 
