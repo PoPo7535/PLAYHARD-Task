@@ -26,6 +26,7 @@ public class BubbleShooter : MonoBehaviour
         _predictionBubble.SetType(BubbleType.Bule);
         _predictionBubble.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 50);
         _predictionBubble.GetComponent<CircleCollider2D>().enabled = false;
+        _predictionBubble.transform.parent = transform;
     }
 
     public void Update()
@@ -42,30 +43,39 @@ public class BubbleShooter : MonoBehaviour
         {
             lineParticle.gameObject.SetActive(true);
             _predictionBubble.gameObject.SetActive(true);
+            ShooterTrajectory();
         }
         
         if (Input.GetMouseButton(0) ||
             Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
         {
-            var hit = Shooter();
-            if (hit.IsUnityNull())
-                return;
-            if (hit[1].transform.CompareTag("Bubble"))
-            {
-                _predictionBubble.transform.position = grid.GetGridPosition(grid.GetHitPointToCell(hit[1]));
-            }
+            ShooterTrajectory();
         }
     }
 
-    private RaycastHit2D[] Shooter()
+    private void ShooterTrajectory()
     {
-        var result = new RaycastHit2D[2];
-
+        // 각도 계산
         var screenPos = GetPointerWorldPosition();
         var dir = (screenPos - (Vector2)transform.position).normalized;
         if (viewAngle / 2f < Vector2.Angle(transform.up, dir))
-            return null;
+            return;
 
+        // 예측 궤도
+        var hit = ShooterTrajectory(dir);
+        if (hit.IsUnityNull())
+            return;
+            
+        // 예측 샷
+        if (hit[1].transform.CompareTag("Bubble"))
+        {
+            _predictionBubble.transform.position = grid.GetGridPosition(grid.GetHitPointToCell(hit[1]));
+        }
+    }
+
+    private RaycastHit2D[] ShooterTrajectory(Vector2 dir)
+    {
+        var result = new RaycastHit2D[2];
         result[1] = result[0] = Physics2D.CircleCast(transform.position, 0.07f, dir, viewDis);
         if (result[0].transform.CompareTag("Wall"))
         {
