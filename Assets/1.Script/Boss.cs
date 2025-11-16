@@ -1,3 +1,4 @@
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -16,9 +17,24 @@ public class Boss : MonoBehaviour
     [Button]
     public void Foo()
     {
-        for (int i = 0; i < _leftLine.Length; ++i)
+        HexagonGrid.I.SetBubble(null, _leftLine[0]);
+        for (int i = _leftLine.Length - 2; i >= 0; i--) 
         {
-            HexagonGrid.I.SetBubble(null, _leftLine[i]);
+            if (HexagonGrid.I.IsValid(_leftLine[i]))
+            {
+                if (i != 0)
+                    HexagonGrid.I.MoveCellBubble(_leftLine[i], _leftLine[i + 1]);
+                else
+                    HexagonGrid.I.MoveCellBubble(_leftLine[i], _leftLine[i + 1], () =>
+                    {
+                        if(false == HexagonGrid.I.IsValid(_leftLine.Last()))
+                            Foo();
+                    });
+            }
+        }
+        for (int i = 1; i < _leftLine.Length; ++i)
+        {
+            
         }
     }
 }

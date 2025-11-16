@@ -16,7 +16,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
 
     public void Start()
     {
-        AddHexLine(10);
+        AddHexLine(11);
         // for (int i = 0; i < FirstLineCount; ++i)
         //     SetBubble(null, 6, i);
         // for (int i = 0; i < ScendLineCount; ++i)
@@ -45,11 +45,21 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         _hexList[cell.y][cell.x] = bubble;
     }
 
-    public void PushBubble(Vector2Int startCell, Vector2Int endCell)
+    public void MoveCellBubble(Vector2Int startCell, Vector2Int endCell, Action endCallBack = null, float dur = 0.2f)
     {
-        
+        var pos = GetCellPos(endCell);
+        _hexList[startCell.y][startCell.x].transform.DOMove(pos, dur).SetEase(Ease.Linear).OnComplete(() =>
+        {
+            endCallBack?.Invoke();
+        });
+        _hexList[endCell.y][endCell.x] = _hexList[startCell.y][startCell.x];
+        _hexList[startCell.y][startCell.x] = null;
     }
 
+    public bool IsValid(Vector2Int cell)
+    {
+        return false == _hexList[cell.y][cell.x].IsUnityNull();
+    }
     public Vector2Int GetPosToCellNumber(Vector2 pos)
     {
         return (Vector2Int)grid.WorldToCell(pos);
@@ -57,7 +67,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
 
     public Vector3 GetCellPos(Vector2Int cell)
     {
-        var vector3 = grid.GetCellCenterWorld(new Vector3Int(cell.y, cell.x * -1, 1));
+        var vector3 = grid.GetCellCenterWorld(new Vector3Int(cell.x, cell.y * -1, 1));
         return vector3;
     }
 
