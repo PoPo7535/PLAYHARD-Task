@@ -1,5 +1,6 @@
 using System;
 using System.Numerics;
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using Unity.VisualScripting;
@@ -14,11 +15,17 @@ public class BubbleShooter : MonoBehaviour
     public HexagonGrid grid;
     public float viewDis = 10f;
     public float viewAngle = 90f;
+    public float shootSpeed = 5f;
     private int _segments = 5;  
 
     private Bubble _predictionBubble;
+    private RaycastHit2D[] hit = new RaycastHit2D[2];
 
     public void Start()
+    {
+        InitPredictionBubble();
+    }
+    private void InitPredictionBubble()
     {
         _predictionBubble = BubblePool.I.Pool.Get();
         _predictionBubble.tag = "Untagged";
@@ -29,21 +36,23 @@ public class BubbleShooter : MonoBehaviour
         _predictionBubble.transform.parent = transform;
     }
 
+
     public void Update()
     {
         if (Input.GetMouseButtonUp(0) ||
             Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
         {
-            lineParticle.gameObject.SetActive(false);
-            _predictionBubble.gameObject.SetActive(false);
+            if (_predictionBubble.gameObject.activeSelf)
+            {
+                BubbleShot();
+            }
+            SetVisualsActive(false);
         }
 
         if (Input.GetMouseButtonDown(0) ||
             Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
-            lineParticle.gameObject.SetActive(true);
-            _predictionBubble.gameObject.SetActive(true);
-            ShooterTrajectory();
+             ShooterTrajectory();
         }
         
         if (Input.GetMouseButton(0) ||
@@ -53,54 +62,56 @@ public class BubbleShooter : MonoBehaviour
         }
     }
 
+    private void BubbleShot()
+    {
+        var bubble = BubblePool.I.Pool.Get();
+        bubble.transform.position = transform.position;
+        bubble.SetType(BubbleType.Bule);
+        bubble.transform.DOMove(grid.GetPosToCellPos(hit[0]), shootSpeed).SetSpeedBased().SetEase(Ease.Linear).
+            OnComplete(() => bubble.transform.DOMove(_predictionBubble.transform.position, shootSpeed).SetEase(Ease.Linear).SetSpeedBased());
+    }
+
+    private void SetVisualsActive(bool isActive)
+    {
+        lineParticle.gameObject.SetActive(isActive);
+        _predictionBubble.gameObject.SetActive(isActive);   
+    }
     private void ShooterTrajectory()
     {
         // 각도 계산
-        var screenPos = GetPointerWorldPosition();
+        var screenPos = Utile.GetPointerWorldPosition();
         var dir = (screenPos - (Vector2)transform.position).normalized;
         if (viewAngle / 2f < Vector2.Angle(transform.up, dir))
+        {
+            SetVisualsActive(false);
             return;
+        }
+        SetVisualsActive(true);
 
         // 예측 궤도
-        var hit = ShooterTrajectory(dir);
-        if (hit.IsUnityNull())
-            return;
-            
+        ShooterTrajectory(dir);
+        if (hit.IsUnityNull()) return;
+
         // 예측 샷
         if (hit[1].transform.CompareTag("Bubble"))
-        {
-            _predictionBubble.transform.position = grid.GetGridPosition(grid.GetHitPointToCell(hit[1]));
-        }
+            _predictionBubble.transform.position = grid.GetPosToCellPos(hit[1]);
     }
 
-    private RaycastHit2D[] ShooterTrajectory(Vector2 dir)
+    private void ShooterTrajectory(Vector2 dir)
     {
-        var result = new RaycastHit2D[2];
-        result[1] = result[0] = Physics2D.CircleCast(transform.position, 0.07f, dir, viewDis);
-        if (result[0].transform.CompareTag("Wall"))
+        hit[1] = hit[0] = Physics2D.CircleCast(transform.position, 0.1f, dir, viewDis);
+        if (hit[0].transform.CompareTag("Wall"))
         {
-            var point = result[0].point - (dir * 0.01f);
-            dir = Vector3.Reflect(dir, result[0].normal);
-            result[1] = Physics2D.Raycast(point, dir, viewDis);
+            var point = hit[0].centroid - (dir * 0.01f);
+            dir = Vector3.Reflect(dir, hit[0].normal);
+            hit[1] = Physics2D.Raycast(point, dir, viewDis);
         }
         lineParticle.SetPosition(0, transform.position);
-        lineParticle.SetPosition(1, result[0].point);
-        lineParticle.SetPosition(2, result[1].point);
-        return result;
+        lineParticle.SetPosition(1, hit[0].centroid);
+        lineParticle.SetPosition(2, hit[1].centroid);
     }
 
-    private Vector2 GetPointerWorldPosition()
-    {
-        Vector2 screenPos;
 
-        if (Input.touchCount == 0)
-            screenPos = Input.mousePosition;
-        else
-            screenPos = Input.GetTouch(0).position;
-
-        return Camera.main.ScreenToWorldPoint(screenPos);
-    }
-    
 #if UNITY_EDITOR
     public bool showGizmos = true;
     public void OnDrawGizmos()

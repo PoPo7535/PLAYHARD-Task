@@ -41,7 +41,7 @@ public class HexagonGrid : MonoBehaviour
         _hexList[line][index] = bubble;
         
     }
-    public Vector3Int GetHitPointToCell(RaycastHit2D hit)
+    public Vector3Int GetHitPosToCell(RaycastHit2D hit)
     {
         var localPos = new Vector3(
             hit.point.x,
@@ -49,13 +49,18 @@ public class HexagonGrid : MonoBehaviour
         var vector3 = grid.WorldToCell(localPos);
         return vector3;
     }
-    public Vector3 GetGridPosition(Vector3Int position)
+    public Vector3 GetCellToPos(Vector3Int position)
     {
         var error = false == CheckError(position.x, position.y * -1);
         if (error)
             return Vector3.zero;
         var vector3 = grid.GetCellCenterWorld(position);
         return vector3;
+    }
+
+    public Vector3 GetPosToCellPos(RaycastHit2D position)
+    {
+        return  GetCellToPos(GetHitPosToCell(position));
     }
     [Button]
     public Vector3 GetGridPosition(int line, int index)
