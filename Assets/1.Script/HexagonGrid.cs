@@ -4,21 +4,23 @@ using DG.Tweening;
 using Sirenix.OdinInspector;
 using Unity.VisualScripting;
 using UnityEngine;
+using Utility;
 
-public class HexagonGrid : MonoBehaviour
+public class HexagonGrid : LocalSingleton<HexagonGrid>
 {
     private const int FirstLineCount = 11;
     private const int ScendLineCount = 10;
-    public Grid grid;
     private readonly List<Bubble[]> _hexList = new();
+    [SerializeField]private Grid grid;
+    public Vector2 CellSize => grid.cellSize;
 
     public void Start()
     {
         AddHexLine(10);
-        for (int i = 0; i < FirstLineCount; ++i)
-            SetBubble(null, 6, i);
-        for (int i = 0; i < ScendLineCount; ++i)
-            SetBubble(null, 7, i);
+        // for (int i = 0; i < FirstLineCount; ++i)
+        //     SetBubble(null, 6, i);
+        // for (int i = 0; i < ScendLineCount; ++i)
+        //     SetBubble(null, 7, i);
     }
 
     public void AddHexLine(int lineCount = 1)
@@ -30,62 +32,42 @@ public class HexagonGrid : MonoBehaviour
         }
     }
 
-    public void SetBubble(Bubble bubble, int line, int index)
+    public void SetBubble(Bubble bubble, Vector2Int cell)
     {
-        var pos = GetGridPosition(line, index);
+        var pos = GetCellPos(cell);
         if (bubble.IsUnityNull())
             bubble = BubblePool.I.Pool.Get();
         bubble.SetType(BubbleType.Bule);
         bubble.transform.SetParent(transform);
         bubble.transform.position = pos;
-        _hexList[line][index] = bubble;
+        if (cell.y == _hexList.Count)
+            AddHexLine(1 + cell.y - _hexList.Count);
+        _hexList[cell.y][cell.x] = bubble;
+    }
+
+    public void PushBubble(Vector2Int startCell, Vector2Int endCell)
+    {
         
     }
-    public Vector3Int GetHitPosToCell(RaycastHit2D hit)
+
+    public Vector2Int GetPosToCellNumber(Vector2 pos)
     {
-        var localPos = new Vector3(
-            hit.point.x,
-            hit.point.y - (grid.cellSize.y / 2));
-        var vector3 = grid.WorldToCell(localPos);
-        return vector3;
+        return (Vector2Int)grid.WorldToCell(pos);
     }
-    public Vector3 GetCellToPos(Vector3Int position)
+
+    public Vector3 GetCellPos(Vector2Int cell)
     {
-        var error = false == CheckError(position.x, position.y * -1);
-        if (error)
-            return Vector3.zero;
-        var vector3 = grid.GetCellCenterWorld(position);
+        var vector3 = grid.GetCellCenterWorld(new Vector3Int(cell.y, cell.x * -1, 1));
         return vector3;
     }
 
-    public Vector3 GetPosToCellPos(RaycastHit2D position)
+    public Vector3 GetPosToWorldPos(Vector2 position)
     {
-        return  GetCellToPos(GetHitPosToCell(position));
+        return  GetCellPos(GetPosToCellNumber(position));
     }
-    [Button]
-    public Vector3 GetGridPosition(int line, int index)
+    public Vector3 GetPosToWorldPosTest(Vector2 position)
     {
-        var error = false == CheckError(line, index);
-        if (error)
-            return Vector3.zero;
-        var vector3 = grid.GetCellCenterWorld(new Vector3Int(index, line * -1, 1));
-        return vector3;
+        return  GetCellPos(GetPosToCellNumber(position));
     }
 
-    private bool CheckError(int line, int index)
-    {
-        // var first = line % 2 == 0;
-        // if (first && index < FirstLineCount)
-        // {
-        //     Debug.LogError("범위 오류");
-        //     return false;
-        // }
-        //
-        // if (false == first && index < ScendLineCount)
-        // {
-        //     Debug.LogError("범위 오류");
-        //     return false;
-        // }
-        return true;
-    }
 }

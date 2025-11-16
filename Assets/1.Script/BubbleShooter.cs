@@ -12,7 +12,6 @@ using Vector3 = UnityEngine.Vector3;
 public class BubbleShooter : MonoBehaviour
 {
     public LineParticle lineParticle;
-    public HexagonGrid grid;
     public float viewDis = 10f;
     public float viewAngle = 90f;
     public float shootSpeed = 5f;
@@ -67,7 +66,7 @@ public class BubbleShooter : MonoBehaviour
         var bubble = BubblePool.I.Pool.Get();
         bubble.transform.position = transform.position;
         bubble.SetType(BubbleType.Bule);
-        bubble.transform.DOMove(grid.GetPosToCellPos(hit[0]), shootSpeed).SetSpeedBased().SetEase(Ease.Linear).
+        bubble.transform.DOMove(HexagonGrid.I.GetPosToWorldPos(hit[0].point), shootSpeed).SetSpeedBased().SetEase(Ease.Linear).
             OnComplete(() => bubble.transform.DOMove(_predictionBubble.transform.position, shootSpeed).SetEase(Ease.Linear).SetSpeedBased());
     }
 
@@ -94,21 +93,32 @@ public class BubbleShooter : MonoBehaviour
 
         // 예측 샷
         if (hit[1].transform.CompareTag("Bubble"))
-            _predictionBubble.transform.position = grid.GetPosToCellPos(hit[1]);
+            _predictionBubble.transform.position = HexagonGrid.I.GetPosToWorldPos(hit[1].point);
     }
 
     private void ShooterTrajectory(Vector2 dir)
     {
-        hit[1] = hit[0] = Physics2D.CircleCast(transform.position, 0.1f, dir, viewDis);
+        var newHit= Physics2D.CircleCast(transform.position, 0.1f, dir, viewDis);
+        newHit = PointOffSet(newHit);
+        hit[1] = hit[0] = newHit;
         if (hit[0].transform.CompareTag("Wall"))
         {
             var point = hit[0].centroid - (dir * 0.01f);
             dir = Vector3.Reflect(dir, hit[0].normal);
-            hit[1] = Physics2D.Raycast(point, dir, viewDis);
+            newHit = Physics2D.CircleCast(point, 0.1f, dir, viewDis);
+            newHit = PointOffSet(newHit);
+            hit[1] = newHit;
         }
         lineParticle.SetPosition(0, transform.position);
         lineParticle.SetPosition(1, hit[0].centroid);
         lineParticle.SetPosition(2, hit[1].centroid);
+        return;
+
+        RaycastHit2D PointOffSet(RaycastHit2D hit)
+        {
+            hit.point= new Vector2(hit.point.x, hit.point.y - (HexagonGrid.I.CellSize.y / 2));
+            return hit;
+        }
     }
 
 
