@@ -43,29 +43,24 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
 
                 if (findCell.x >= 0 && findCell.x < row &&
                     findCell.y >= 0 && findCell.y < _hexList.Count)
-                    continue;
-                Visit(findCell);
+                {
+                    if (false == _hexList[findCell.y][findCell.x].IsUnityNull() &&
+                        false == _hexVisitList[findCell.y][findCell.x])
+                    {
+                        queue.Enqueue(findCell);
+                        _hexVisitList[findCell.y][findCell.x] = true;
+                    }
+                }
             }
         }
 
         for (int i = 0; i < _hexVisitList.Count; ++i)
-            for (int j = 0; j < _hexVisitList[i].Length; ++j) 
-                if (false == _hexVisitList[i][j]) 
+            for (int j = 0; j < _hexVisitList[i].Length; ++j)
+                if (false == _hexVisitList[i][j] &&
+                    true == _hexList[i][j])
                     _hexList[i][j].Drop();
 
         VisitClear();
-
-        return;
-
-        void Visit(Vector2Int findCell)
-        {
-            if (false == _hexList[findCell.y][findCell.x].IsUnityNull() &&
-                false == _hexVisitList[findCell.y][findCell.x])
-            {
-                queue.Enqueue(findCell);
-                _hexVisitList[findCell.y][findCell.x] = true;
-            }
-        }
     }
 
 
@@ -86,15 +81,15 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
 
     public void SetBubble(Bubble bubble, Vector2Int cell, BubbleType type)
     {
-        var pos = GetCellNumberToPos(cell);
-        if (bubble.IsUnityNull())
-            bubble = BubblePool.I.Pool.Get();
-        bubble.SetType(type);
         if (type == BubbleType.None)
         {
             _hexList[cell.y][cell.x] = null;
             return;
         }
+        var pos = GetCellNumberToPos(cell);
+        if (bubble.IsUnityNull())
+            bubble = BubblePool.I.Pool.Get();
+        bubble.SetType(type);
         
         bubble.transform.SetParent(transform);
         bubble.transform.position = pos;

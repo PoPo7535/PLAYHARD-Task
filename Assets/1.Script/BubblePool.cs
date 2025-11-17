@@ -14,8 +14,11 @@ public class BubblePool : Singleton<BubblePool>
                 var bubble = Instantiate(_bulletPrefab);
                 return bubble;
             },
-            actionOnGet: (bullet) => {
+            actionOnGet: (bullet) => 
+            {
                 bullet.gameObject.SetActive(true);
+                bullet.transform.localScale = new Vector3(0.48f, 0.48f, 1f);
+                bullet.transform.rotation = Quaternion.identity;
             },
             actionOnRelease: (bullet) => {
                 bullet.gameObject.SetActive(false);

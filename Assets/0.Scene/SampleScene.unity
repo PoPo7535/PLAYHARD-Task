@@ -298,7 +298,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feddafc65550e754a81577f86bb9fd2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grid: {fileID: 1362778442}
 --- !u!1 &223231045
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,9 +502,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineParticle: {fileID: 1920600599}
-  grid: {fileID: 1362778442}
   viewDis: 10
-  viewAngle: 90
+  viewAngle: 130
   shootSpeed: 5
   showGizmos: 1
 --- !u!1 &450386802
