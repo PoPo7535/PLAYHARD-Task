@@ -9,91 +9,34 @@ using UnityEngine.Serialization;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
-public class BubbleShooter : MonoBehaviour, IGameStep
+public class BubbleShooter : MonoBehaviour
 {
     public LineParticle lineParticle;
     public float viewDis = 10f;
     public float viewAngle = 90f;
     public float shootSpeed = 5f;
     public int bubbleCount = 22;
-    private int _segments = 5;  
-
-    private Bubble _predictionBubble;
-    private RaycastHit2D[] hit = new RaycastHit2D[2];
+    public bool activeAim = true;
+    [NonSerialized] public Bubble predictionBubble;
+    [NonSerialized] public RaycastHit2D[] hit = new RaycastHit2D[2];
+    private readonly int _segments = 5;
 
     public void Start()
     {
         InitPredictionBubble();
-        GameStepManager.I.SetStep(GameStepType.Aim, this);
     }
     private void InitPredictionBubble()
     {
-        _predictionBubble = BubblePool.I.Pool.Get();
-        _predictionBubble.tag = "Untagged";
-        _predictionBubble.gameObject.SetActive(false);
-        _predictionBubble.SetType(BubbleType.Bule);
-        _predictionBubble.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 50);
-        _predictionBubble.GetComponent<CircleCollider2D>().enabled = false;
-        _predictionBubble.transform.parent = transform;
+        predictionBubble = BubblePool.I.Pool.Get();
+        predictionBubble.tag = "Untagged";
+        predictionBubble.gameObject.SetActive(false);
+        predictionBubble.SetType(BubbleType.Bule);
+        predictionBubble.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 50);
+        predictionBubble.GetComponent<CircleCollider2D>().enabled = false;
+        predictionBubble.transform.parent = transform;
     }
 
-
-    public void Update()
-    {
-        if (Input.GetMouseButtonUp(0) ||
-            Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
-        {
-            if (_predictionBubble.gameObject.activeSelf)
-            {
-                BubbleShot();
-            }
-            SetVisualsActive(false);
-        }
-
-        if (Input.GetMouseButtonDown(0) ||
-            Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-        {
-             ShooterTrajectory();
-        }
-        
-        if (Input.GetMouseButton(0) ||
-            Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
-        {
-            ShooterTrajectory();
-        }
-    }
-
-    private void BubbleShot()
-    {
-        var bubble = BubblePool.I.Pool.Get();
-        bubble.transform.position = transform.position;
-        bubble.SetType(BubbleType.Bule);
-        bubble.transform.DOMove(HexagonGrid.I.GetPosToWorldPos(hit[0].point), shootSpeed)
-            .SetSpeedBased()
-            .SetEase(Ease.Linear).
-            OnComplete(() =>
-            {
-                bubble.transform.DOMove(_predictionBubble.transform.position, shootSpeed)
-                    .SetEase(Ease.Linear)
-                    .SetSpeedBased().OnComplete(() =>
-                    {
-                        var cell = HexagonGrid.I.GetPosToCellNumber(_predictionBubble.transform.position);
-                        HexagonGrid.I.SetBubble(bubble, cell, BubbleType.Bule);
-                        var bubbleList = HexagonGrid.I.CollectConnectedBubbles(cell);
-                        if (3 <= bubbleList.Count)
-                        {
-                            foreach (var bubble in bubbleList)
-                            {
-                                bubble.Drop();
-                            }
-                        }
-
-                        HexagonGrid.I.FindDropBubble(new Vector2Int[] { new(3, 4), new(7, 4) });
-                    });
-            });
-    }
-
-    private void ShooterTrajectory()
+    public void ShooterTrajectory()
     {
         // 각도 계산
         var screenPos = Utile.GetPointerWorldPosition();
@@ -111,10 +54,10 @@ public class BubbleShooter : MonoBehaviour, IGameStep
 
         // 예측 샷
         if (hit[1].transform.CompareTag("Bubble"))
-            _predictionBubble.transform.position = HexagonGrid.I.GetPosToWorldPos(hit[1].point);
+            predictionBubble.transform.position = HexagonGrid.I.GetPosToWorldPos(hit[1].point);
     }
 
-    private void ShooterTrajectory(Vector2 dir)
+    public void ShooterTrajectory(Vector2 dir)
     {
         var newHit= Physics2D.CircleCast(transform.position, 0.1f, dir, viewDis);
         newHit = PointOffSet(newHit);
@@ -138,22 +81,12 @@ public class BubbleShooter : MonoBehaviour, IGameStep
             return hit;
         }
     }
-    private void SetVisualsActive(bool isActive)
+    public void SetVisualsActive(bool isActive)
     {
         lineParticle.gameObject.SetActive(isActive);
-        _predictionBubble.gameObject.SetActive(isActive);   
-    }
-    public void GameSteUpdate()
-    {
+        predictionBubble.gameObject.SetActive(isActive);   
     }
 
-    public void Enter()
-    {
-    }
-
-    public void Exit()
-    {
-    }
 
 #if UNITY_EDITOR
     public bool showGizmos = true;
