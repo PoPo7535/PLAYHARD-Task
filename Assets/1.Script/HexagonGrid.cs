@@ -35,32 +35,44 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         while (queue.Count > 0)
         {
             var cell = queue.Dequeue();
-            if (0 == cell.y % 2)
+            var row = 0 == cell.y % 2 ? FirstLineCount : SecondLineCount;
+            var visit = 0 == cell.y % 2 ? firstVisit : secondVisit;
+            foreach (var vec in visit)
             {
-                foreach (var vec in firstVisit)
-                {
-                    var findCell = vec + cell;
+                var findCell = vec + cell;
 
-                    if (findCell.x >=0 && findCell.x < FirstLineCount &&
-                        findCell.y >= 0 && findCell.y < SecondLineCount &&
-                        findCell.y < _hexList.Count)
-                        continue;
-                    Visit(findCell);
-                }
+                if (findCell.x >= 0 && findCell.x < row &&
+                    findCell.y >= 0 && findCell.y < _hexList.Count)
+                    continue;
+                Visit(findCell);
             }
-            else
-            {
-                foreach (var vec in secondVisit)
-                {
-                    var findCell = vec + cell;
-
-                    if (findCell.x >=0 && findCell.x < SecondLineCount &&
-                        findCell.y >= 0 && findCell.y < FirstLineCount &&
-                        findCell.y < _hexList.Count)
-                        continue;
-                    Visit(findCell);
-                }
-            }
+            //
+            // if (0 == cell.y % 2)
+            // {
+            //     foreach (var vec in visit)
+            //     {
+            //         var findCell = vec + cell;
+            //
+            //         if (findCell.x >=0 && findCell.x < firstRow &&
+            //             findCell.y >= 0 && findCell.y < secondRow &&
+            //             findCell.y < _hexList.Count)
+            //             continue;
+            //         Visit(findCell);
+            //     }
+            // }
+            // else
+            // {
+            //     foreach (var vec in visit)
+            //     {
+            //         var findCell = vec + cell;
+            //
+            //         if (findCell.x >=0 && findCell.x < firstRow &&
+            //             findCell.y >= 0 && findCell.y < secondRow &&
+            //             findCell.y < _hexList.Count)
+            //             continue;
+            //         Visit(findCell);
+            //     }
+            // }
         }
 
         Drop();
@@ -120,6 +132,24 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         _hexList[cell.y][cell.x] = bubble;
     }
 
+    public void AttackBubble(Vector2Int cell)
+    {
+        var firstVisit = new Vector2Int[] { new(-1, 0), new(1, 0), new(-1, 1), new(0, 1), new(-1, -1), new(0, -1) };
+        var secondVisit = new Vector2Int[] { new(-1, 0), new(1, 0), new(0, 1), new(1, 1), new(0, -1), new(1, -1) };
+        var vis = 0 == cell.y % 2 ? firstVisit : secondVisit;
+        var type = _hexList[cell.y][cell.x].MyType;
+        foreach (var vi in vis)
+        {
+            cell += vi;
+            var row = 0 == cell.y % 2 ? FirstLineCount : SecondLineCount;
+            if (cell.x >= 0 && cell.x < row &&
+                cell.y >= 0 && cell.y < _hexList.Count) 
+            {
+            
+            }
+        }
+    }
+    
     public void MoveCellBubble(Vector2Int startCell, Vector2Int endCell, Action endCallBack = null, float dur = 0.1f)
     {
         var pos = GetCellNumberToPos(endCell);

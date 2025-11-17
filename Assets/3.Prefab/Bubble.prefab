@@ -86,7 +86,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &8122352200081681018
@@ -109,7 +109,6 @@ MonoBehaviour:
     - {fileID: -1763975200906863328, guid: 75b40a0a3dd81a84391e31ec236a3785, type: 3}
     - {fileID: -7357371388403073439, guid: a79d3bf1ccb662a45b425d625238250d, type: 3}
     - {fileID: 3983633401551678934, guid: 70d93036c0d1fc045b053ab2aac0082a, type: 3}
-    - {fileID: 4376323382378922804, guid: ddcb25ff553c6ae478f9ee9fde7882cf, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -155,6 +154,18 @@ MonoBehaviour:
       Data: 1
     - Name: $v
       Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 10
       Data: 1
     - Name: 
       Entry: 8
@@ -164,7 +175,7 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 3
-      Data: 2
+      Data: 3
     - Name: $v
       Entry: 10
       Data: 2
@@ -176,22 +187,10 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 3
-      Data: 3
-    - Name: $v
-      Entry: 10
-      Data: 3
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
       Data: 4
     - Name: $v
       Entry: 10
-      Data: 4
+      Data: 3
     - Name: 
       Entry: 8
       Data: 

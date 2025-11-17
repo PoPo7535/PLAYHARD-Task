@@ -7,12 +7,12 @@ using Serial = UnityEngine.SerializeField;
 public class Bubble : SerializedMonoBehaviour, IBubble
 {
     [Serial] private Dictionary<BubbleType, Sprite> _typeSprites = new();
-    [Serial] private BubbleType _myType;
     [Serial] private SpriteRenderer _spriteRenderer;
+    public BubbleType MyType { get; private set; }
     
     public void SetType(BubbleType type)
     {
-        _myType = type;
+        MyType = type;
         _spriteRenderer.sprite = _typeSprites[type];
     }
 
