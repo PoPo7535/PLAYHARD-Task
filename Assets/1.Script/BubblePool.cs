@@ -28,7 +28,7 @@ public class BubblePool : Singleton<BubblePool>
             },
             collectionCheck: false,
             defaultCapacity: 10,
-            maxSize: 100
+            maxSize: 200
         );
     }
 }

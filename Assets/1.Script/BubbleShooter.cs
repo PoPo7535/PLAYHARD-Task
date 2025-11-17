@@ -9,12 +9,13 @@ using UnityEngine.Serialization;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
-public class BubbleShooter : MonoBehaviour
+public class BubbleShooter : MonoBehaviour, IGameStep
 {
     public LineParticle lineParticle;
     public float viewDis = 10f;
     public float viewAngle = 90f;
     public float shootSpeed = 5f;
+    public int bubbleCount = 22;
     private int _segments = 5;  
 
     private Bubble _predictionBubble;
@@ -23,6 +24,7 @@ public class BubbleShooter : MonoBehaviour
     public void Start()
     {
         InitPredictionBubble();
+        GameStepManager.I.SetStep(GameStepType.Aim, this);
     }
     private void InitPredictionBubble()
     {
@@ -141,7 +143,17 @@ public class BubbleShooter : MonoBehaviour
         lineParticle.gameObject.SetActive(isActive);
         _predictionBubble.gameObject.SetActive(isActive);   
     }
+    public void GameSteUpdate()
+    {
+    }
 
+    public void Enter()
+    {
+    }
+
+    public void Exit()
+    {
+    }
 
 #if UNITY_EDITOR
     public bool showGizmos = true;
@@ -182,4 +194,5 @@ public class BubbleShooter : MonoBehaviour
         }
     }
 #endif
+
 }

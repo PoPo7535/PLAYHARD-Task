@@ -141,8 +141,8 @@ MonoBehaviour:
       Entry: 3
       Data: 0
     - Name: $v
-      Entry: 10
-      Data: 0
+      Entry: 6
+      Data: 
     - Name: 
       Entry: 8
       Data: 
@@ -200,7 +200,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  _myType: 0
   _spriteRenderer: {fileID: 8008899323396352130}
 --- !u!58 &-8173790326984056516
 CircleCollider2D:

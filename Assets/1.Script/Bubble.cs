@@ -54,6 +54,4 @@ public enum BubbleType
     Bule,
     Yellow,
     Red,
-    Green,
-    Purple,
 }
