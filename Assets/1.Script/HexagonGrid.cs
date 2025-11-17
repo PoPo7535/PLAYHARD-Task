@@ -103,18 +103,21 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         _hexList[cell.y][cell.x] = bubble;
     }
 
-    [Button]
-    public void AttackBubble(Vector2Int cell)
+    public List<Bubble> CollectConnectedBubbles(Vector2Int cell)
     {
         var firstVisit = new Vector2Int[] { new(-1, 0), new(1, 0), new(-1, 1), new(0, 1), new(-1, -1), new(0, -1) };
         var secondVisit = new Vector2Int[] { new(-1, 0), new(1, 0), new(0, 1), new(1, 1), new(0, -1), new(1, -1) };
-        var vis = 0 == cell.y % 2 ? firstVisit : secondVisit;
         var type = _hexList[cell.y][cell.x].MyType;
         var cellQueue = new Queue<Vector2Int>();
+        var cellList = new List<Bubble>();
         cellQueue.Enqueue(cell);
+        cellList.Add(_hexList[cell.y][cell.x]);
+        _hexVisitList[cell.y][cell.x] = true;
+
         while (0 < cellQueue.Count)
         {
             cell = cellQueue.Dequeue();
+            var vis = 0 == cell.y % 2 ? firstVisit : secondVisit;
             foreach (var vi in vis)
             {
                 var newCell = cell + vi;
@@ -127,7 +130,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
                     if (_hexList[newCell.y][newCell.x].MyType == type)
                     {
                         cellQueue.Enqueue(newCell);
-                        _hexList[newCell.y][newCell.x].Drop();
+                        cellList.Add(_hexList[newCell.y][newCell.x]);
                     }
                     _hexVisitList[newCell.y][newCell.x] = true;
                 }
@@ -135,6 +138,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         }
 
         VisitClear();
+        return cellList;
     }
     
     public void MoveCellBubble(Vector2Int startCell, Vector2Int endCell, Action endCallBack = null, float dur = 0.1f)
