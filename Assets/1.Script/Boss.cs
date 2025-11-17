@@ -40,7 +40,8 @@ public class Boss : MonoBehaviour
     {
         if (HexagonGrid.I.IsValid(line.Last()))
             return;
-        HexagonGrid.I.SetBubble(null, line[0]);
+        var type = (BubbleType)Random.Range(1, 5);
+        HexagonGrid.I.SetBubble(null, line[0], type);
         for (int i = line.Length - 2; i >= 0; i--)
         {
             if (false == HexagonGrid.I.IsValid(line[i])) 

@@ -66,15 +66,21 @@ public class BubbleShooter : MonoBehaviour
         var bubble = BubblePool.I.Pool.Get();
         bubble.transform.position = transform.position;
         bubble.SetType(BubbleType.Bule);
-        bubble.transform.DOMove(HexagonGrid.I.GetPosToWorldPos(hit[0].point), shootSpeed).SetSpeedBased().SetEase(Ease.Linear).
-            OnComplete(() => bubble.transform.DOMove(_predictionBubble.transform.position, shootSpeed).SetEase(Ease.Linear).SetSpeedBased());
+        bubble.transform.DOMove(HexagonGrid.I.GetPosToWorldPos(hit[0].point), shootSpeed)
+            .SetSpeedBased()
+            .SetEase(Ease.Linear).
+            OnComplete(() =>
+            {
+                bubble.transform.DOMove(_predictionBubble.transform.position, shootSpeed)
+                    .SetEase(Ease.Linear)
+                    .SetSpeedBased().OnComplete(() =>
+                    {
+                        var cell = HexagonGrid.I.GetPosToCellNumber(_predictionBubble.transform.position);
+                        HexagonGrid.I.SetBubble(bubble, cell, BubbleType.Bule);
+                    });
+            });
     }
 
-    private void SetVisualsActive(bool isActive)
-    {
-        lineParticle.gameObject.SetActive(isActive);
-        _predictionBubble.gameObject.SetActive(isActive);   
-    }
     private void ShooterTrajectory()
     {
         // 각도 계산
@@ -119,6 +125,11 @@ public class BubbleShooter : MonoBehaviour
             hit.point= new Vector2(hit.point.x, hit.point.y - (HexagonGrid.I.CellSize.y / 2));
             return hit;
         }
+    }
+    private void SetVisualsActive(bool isActive)
+    {
+        lineParticle.gameObject.SetActive(isActive);
+        _predictionBubble.gameObject.SetActive(isActive);   
     }
 
 

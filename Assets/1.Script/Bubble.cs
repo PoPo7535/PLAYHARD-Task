@@ -15,6 +15,11 @@ public class Bubble : SerializedMonoBehaviour, IBubble
         _myType = type;
         _spriteRenderer.sprite = _typeSprites[type];
     }
+
+    public void Drop()
+    {
+        
+    }
     public void GetDamage(BubbleType type)
     {
     }
@@ -24,6 +29,7 @@ public class Bubble : SerializedMonoBehaviour, IBubble
 
 public enum BubbleType
 {
+    None,
     Bule,
     Yellow,
     Red,
