@@ -15,7 +15,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
     [SerializeField]private Grid grid;
     public Vector2 CellSize => grid.cellSize;
 
-    public void Start()
+    public void Awake()
     {
         AddHexLine(11);
     }
@@ -46,36 +46,14 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
                     continue;
                 Visit(findCell);
             }
-            //
-            // if (0 == cell.y % 2)
-            // {
-            //     foreach (var vec in visit)
-            //     {
-            //         var findCell = vec + cell;
-            //
-            //         if (findCell.x >=0 && findCell.x < firstRow &&
-            //             findCell.y >= 0 && findCell.y < secondRow &&
-            //             findCell.y < _hexList.Count)
-            //             continue;
-            //         Visit(findCell);
-            //     }
-            // }
-            // else
-            // {
-            //     foreach (var vec in visit)
-            //     {
-            //         var findCell = vec + cell;
-            //
-            //         if (findCell.x >=0 && findCell.x < firstRow &&
-            //             findCell.y >= 0 && findCell.y < secondRow &&
-            //             findCell.y < _hexList.Count)
-            //             continue;
-            //         Visit(findCell);
-            //     }
-            // }
         }
 
-        Drop();
+        for (int i = 0; i < _hexVisitList.Count; ++i)
+            for (int j = 0; j < _hexVisitList[i].Length; ++j) 
+                if (false == _hexVisitList[i][j]) 
+                    _hexList[i][j].Drop();
+
+        VisitClear();
 
         return;
 
@@ -90,19 +68,12 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         }
     }
 
-    public void Drop()
+
+    private void VisitClear()
     {
-        for (int i = 0; i < _hexVisitList.Count; ++i)
-            for (int j = 0; j < _hexVisitList[i].Length; ++j)
-                if (false == _hexVisitList[i][j])
-                {
-                    _hexList[i][j].Drop();
-                }
-        for (int i = 0; i < _hexVisitList.Count; ++i)
-            Array.Clear(_hexVisitList[i], 0, _hexVisitList[i].Length);
-
+        foreach (var arr in _hexVisitList)
+            Array.Clear(arr, 0, arr.Length);
     }
-
     public void AddHexLine(int lineCount = 1)
     {
         for (int i = 0; i < lineCount; ++i)
@@ -132,22 +103,38 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         _hexList[cell.y][cell.x] = bubble;
     }
 
+    [Button]
     public void AttackBubble(Vector2Int cell)
     {
         var firstVisit = new Vector2Int[] { new(-1, 0), new(1, 0), new(-1, 1), new(0, 1), new(-1, -1), new(0, -1) };
         var secondVisit = new Vector2Int[] { new(-1, 0), new(1, 0), new(0, 1), new(1, 1), new(0, -1), new(1, -1) };
         var vis = 0 == cell.y % 2 ? firstVisit : secondVisit;
         var type = _hexList[cell.y][cell.x].MyType;
-        foreach (var vi in vis)
+        var cellQueue = new Queue<Vector2Int>();
+        cellQueue.Enqueue(cell);
+        while (0 < cellQueue.Count)
         {
-            cell += vi;
-            var row = 0 == cell.y % 2 ? FirstLineCount : SecondLineCount;
-            if (cell.x >= 0 && cell.x < row &&
-                cell.y >= 0 && cell.y < _hexList.Count) 
+            cell = cellQueue.Dequeue();
+            foreach (var vi in vis)
             {
-            
+                var newCell = cell + vi;
+                var row = 0 == newCell.y % 2 ? FirstLineCount : SecondLineCount;
+                if (newCell.x >= 0 && newCell.x < row &&
+                    newCell.y >= 0 && newCell.y < _hexList.Count &&
+                    false == _hexList[newCell.y][newCell.x].IsUnityNull() &&
+                    false == _hexVisitList[newCell.y][newCell.x])
+                {
+                    if (_hexList[newCell.y][newCell.x].MyType == type)
+                    {
+                        cellQueue.Enqueue(newCell);
+                        _hexList[newCell.y][newCell.x].Drop();
+                    }
+                    _hexVisitList[newCell.y][newCell.x] = true;
+                }
             }
         }
+
+        VisitClear();
     }
     
     public void MoveCellBubble(Vector2Int startCell, Vector2Int endCell, Action endCallBack = null, float dur = 0.1f)

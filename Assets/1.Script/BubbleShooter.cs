@@ -77,6 +77,7 @@ public class BubbleShooter : MonoBehaviour
                     {
                         var cell = HexagonGrid.I.GetPosToCellNumber(_predictionBubble.transform.position);
                         HexagonGrid.I.SetBubble(bubble, cell, BubbleType.Bule);
+                        HexagonGrid.I.AttackBubble(cell);
                     });
             });
     }

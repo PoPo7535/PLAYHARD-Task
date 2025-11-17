@@ -25,14 +25,9 @@ public class Boss : MonoBehaviour
         new(9, 10), new(8, 10), new(7, 10)
     };
 
-    [Button]
-    public void Test()
+    public void Start()
     {
         BubbleLineRefill(_leftLine);
-    }
-    [Button]
-    public void Test2()
-    {
         BubbleLineRefill(_rightLine);
     }
 

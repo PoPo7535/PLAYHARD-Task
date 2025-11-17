@@ -18,7 +18,7 @@ public class Bubble : SerializedMonoBehaviour, IBubble
 
     public void Drop()
     {
-        
+        Debug.Log($"Drop{HexagonGrid.I.GetPosToCellNumber(transform.position)}");
     }
     public void GetDamage(BubbleType type)
     {
