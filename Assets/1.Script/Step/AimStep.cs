@@ -3,44 +3,49 @@ using UnityEngine;
 
 public class AimStep : IGameStep
 {
-    public BubbleShooter shooter;
+    private BubbleShooter _shooter;
+    public void Init(BubbleShooter shooter)
+    {
+        _shooter = shooter;
+    }
+
     public void GameSteUpdate()
     {
-        if (false == shooter.activeAim)
+        if (false == _shooter.activeAim)
             return;
         if (Input.GetMouseButtonUp(0) ||
             Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
         {
-            if (shooter.predictionBubble.gameObject.activeSelf)
+            if (_shooter.predictionBubble.gameObject.activeSelf)
                 BubbleShot();
-            shooter.SetVisualsActive(false);
+            _shooter.SetVisualsActive(false);
         }
 
         if (Input.GetMouseButtonDown(0) ||
             Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
-            shooter.ShooterTrajectory();
+            _shooter.ShooterTrajectory();
         }
         
         if (Input.GetMouseButton(0) ||
             Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
         {
-            shooter.ShooterTrajectory();
+            _shooter.ShooterTrajectory();
         }
     }
 
     private void BubbleShot()
     {
-        shooter.activeAim = false;
+        _shooter.activeAim = false;
         var bubble = BubblePool.I.Pool.Get();
-        bubble.transform.position = shooter.transform.position;
+        bubble.transform.position = _shooter.transform.position;
         bubble.SetType(BubbleType.Bule);
-        bubble.transform.DOMove(HexagonGrid.I.GetPosToWorldPos(shooter.hit[0].point), shooter.shootSpeed)
+        bubble.transform.DOMove(HexagonGrid.I.GetPosToWorldPos(_shooter.hit[0].point), _shooter.shootSpeed)
             .SetSpeedBased()
             .SetEase(Ease.Linear).
             OnComplete(() =>
             {
-                bubble.transform.DOMove(shooter.predictionBubble.transform.position, shooter.shootSpeed)
+                bubble.transform.DOMove(_shooter.predictionBubble.transform.position, _shooter.shootSpeed)
                     .SetEase(Ease.Linear)
                     .SetSpeedBased().OnComplete(() =>
                     {

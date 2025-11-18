@@ -4,7 +4,7 @@ using Utility;
 
 public class GameStepManager : LocalSingleton<GameStepManager>
 {
-
+    public BubbleShooter shooter;
     private GameStepType _currentStep;
     private IGameStep _readyStep;
     private IGameStep _aimStep;
@@ -13,7 +13,14 @@ public class GameStepManager : LocalSingleton<GameStepManager>
 
     private void Start()
     {
-        _bubbleFallStep = new BubbleFallStep();
+        var aimStep = new AimStep();
+        aimStep.Init(shooter);
+        _aimStep = aimStep;
+        
+        var bubbleFallStep = new BubbleFallStep();
+        bubbleFallStep.Init(shooter);
+        _bubbleFallStep = bubbleFallStep;
+        _currentStep = GameStepType.Aim;
     }
 
     private void Update()

@@ -47,7 +47,6 @@ public class BubbleShooter : MonoBehaviour
             return;
         }
         SetVisualsActive(true);
-
         // 예측 궤도
         ShooterTrajectory(dir);
         if (hit.IsUnityNull()) return;

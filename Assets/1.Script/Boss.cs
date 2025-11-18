@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -31,10 +32,18 @@ public class Boss : MonoBehaviour
         BubbleLineRefill(_rightLine);
     }
 
-    public void BubbleLineRefill(Vector2Int[] line)
+    public void BubbleLineRefill()
+    {
+        BubbleLineRefill(_leftLine);
+        BubbleLineRefill(_rightLine);
+    }
+    public async void BubbleLineRefill(Vector2Int[] line)
     {
         if (HexagonGrid.I.IsValid(line.Last()))
+        {
+            await Task.Yield();
             return;
+        }
         var type = (BubbleType)Random.Range(1, 3);
         HexagonGrid.I.SetBubble(null, line[0], type);
         for (int i = line.Length - 2; i >= 0; i--)

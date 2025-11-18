@@ -20,10 +20,10 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         AddHexLine(11);
     }
 
-    public void FindDropBubble(Vector2Int[] cellPos)
+    public void FindDropBubble(Vector2Int[] findStartCellPos)
     {
         Queue<Vector2Int> queue = new();
-        foreach (var vec in cellPos)
+        foreach (var vec in findStartCellPos)
         {
             queue.Enqueue(vec);
             _hexVisitList[vec.y][vec.x] = true;
