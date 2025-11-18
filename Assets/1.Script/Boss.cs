@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -32,28 +33,39 @@ public class Boss : MonoBehaviour
         BubbleLineRefill(_rightLine);
     }
 
-    public void BubbleLineRefill()
+    public async UniTask BubbleLineRefill()
     {
-        BubbleLineRefill(_leftLine);
-        BubbleLineRefill(_rightLine);
+        var (result1, result2) = await UniTask.WhenAll(
+            BubbleLineRefill(_leftLine),
+            BubbleLineRefill(_rightLine)
+        );
+
+        await new WaitUntil(() => result1 && result2);
     }
-    public async void BubbleLineRefill(Vector2Int[] line)
+
+    private static async UniTask<bool> BubbleLineRefill(Vector2Int[] line, float dur = 0.1f)
     {
         if (HexagonGrid.I.IsValid(line.Last()))
-        {
-            await Task.Yield();
-            return;
-        }
-        var type = (BubbleType)Random.Range(1, 3);
+            return true;
+
+        var c = Random.Range(1, 4);
+        
+        var type = (BubbleType)c;
+        Debug.Log($"[{c}:{type}]");
         HexagonGrid.I.SetBubble(null, line[0], type);
+        var count = 1;
         for (int i = line.Length - 2; i >= 0; i--)
         {
             if (false == HexagonGrid.I.IsValid(line[i])) 
                 continue;
+            ++count;
             if (i != 0)
-                HexagonGrid.I.MoveCellBubble(line[i], line[i + 1]);
+                HexagonGrid.I.MoveCellBubble(line[i], line[i + 1], dur: dur);
             else
-                HexagonGrid.I.MoveCellBubble(line[i], line[i + 1], () => BubbleLineRefill(line));
+                HexagonGrid.I.MoveCellBubble(line[i], line[i + 1], () => _ = BubbleLineRefill(line), dur: dur);
         }
+
+        await UniTask.Delay(count * (int)(dur * 1000));
+        return true;
     }
 }

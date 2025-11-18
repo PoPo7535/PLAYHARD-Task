@@ -5,10 +5,11 @@ using Utility;
 public class GameStepManager : LocalSingleton<GameStepManager>
 {
     public BubbleShooter shooter;
+    public Boss boss;
     private GameStepType _currentStep;
     private IGameStep _readyStep;
     private IGameStep _aimStep;
-    private IGameStep _fireStep;
+    private IGameStep _bossStep;
     private IGameStep _bubbleFallStep;
 
     private void Start()
@@ -20,6 +21,11 @@ public class GameStepManager : LocalSingleton<GameStepManager>
         var bubbleFallStep = new BubbleFallStep();
         bubbleFallStep.Init(shooter);
         _bubbleFallStep = bubbleFallStep;
+        
+        var bossStep = new BossStep();
+        bossStep.Init(boss);
+        _bossStep = bossStep;
+        
         _currentStep = GameStepType.Aim;
     }
 
@@ -33,6 +39,9 @@ public class GameStepManager : LocalSingleton<GameStepManager>
             case GameStepType.BubbleFall:
                 _bubbleFallStep.GameSteUpdate();
                 break;
+            case GameStepType.Boss:
+                _bossStep.GameSteUpdate();
+                break;
         }
     }
 
@@ -42,6 +51,7 @@ public class GameStepManager : LocalSingleton<GameStepManager>
         {
             GameStepType.Aim => _aimStep,
             GameStepType.BubbleFall => _bubbleFallStep,
+            GameStepType.Boss => _bossStep,
             _ => null
         };
     }
@@ -49,6 +59,7 @@ public class GameStepManager : LocalSingleton<GameStepManager>
     public void ChangeStep(GameStepType type)
     {
         GetCurrentStep().Exit();
+        Debug.Log($"게임스텝 변경 {_currentStep} => {type}");
         _currentStep = type;
         GetCurrentStep().Enter();
     }
@@ -58,4 +69,5 @@ public enum GameStepType
 {
     Aim,
     BubbleFall,
+    Boss,
 }

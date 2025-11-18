@@ -9,9 +9,10 @@ public class BossStep : IGameStep
     }
     public void GameSteUpdate() { }
 
-    public void Enter()
+    public async void Enter()
     {
-        
+        await _boss.BubbleLineRefill();
+        GameStepManager.I.ChangeStep(GameStepType.Aim);
     }
     public void Exit() { }
 }

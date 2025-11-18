@@ -210,7 +210,7 @@ GameObject:
   - component: {fileID: 174845087}
   - component: {fileID: 174845088}
   m_Layer: 0
-  m_Name: Square
+  m_Name: Boss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -567,6 +567,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shooter: {fileID: 352334907}
+  boss: {fileID: 174845088}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

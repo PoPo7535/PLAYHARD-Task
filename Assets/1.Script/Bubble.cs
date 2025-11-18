@@ -28,10 +28,9 @@ public class Bubble : SerializedMonoBehaviour, IBubble
         var seq = DOTween.Sequence();
 
         seq.Append(transform.DOMove(scatterTarget, 0.3f).SetEase(Ease.OutQuad));
-
         seq.Append(transform.DOMove(new Vector3(0, -3, 0), 0.7f).SetEase(Ease.InQuad));
+        
         seq.Join(transform.DOScale(Vector3.zero, 0.7f));
-
         seq.Join(transform.DORotate(new Vector3(0, 0, 360), 0.7f, RotateMode.FastBeyond360));
 
         seq.OnComplete(() => BubblePool.I.Pool.Release(this));
