@@ -48,10 +48,7 @@ public class Boss : MonoBehaviour
         if (HexagonGrid.I.IsValid(line.Last()))
             return true;
 
-        var c = Random.Range(1, 4);
-        
-        var type = (BubbleType)c;
-        Debug.Log($"[{c}:{type}]");
+        var type = Bubble.GetRandomBubbleType;
         HexagonGrid.I.SetBubble(null, line[0], type);
         var count = 1;
         for (int i = line.Length - 2; i >= 0; i--)

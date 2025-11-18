@@ -12,32 +12,56 @@ public class Bubble : SerializedMonoBehaviour, IBubble
     private Vector2Int Cell => HexagonGrid.I.GetPosToCellNumber(transform.position);
     public BubbleType MyType { get; private set; }
     
+    
     public void SetType(BubbleType type)
     {
         MyType = type;
         _spriteRenderer.sprite = _typeSprites[type];
     }
 
-    public void Drop()
+    public float suckDuration = 1f;
+
+    public void Drop(float totalDuration = 1f)
     {
         HexagonGrid.I.SetBubble(null, Cell, BubbleType.None);
+        var startPos = transform.position;
+
         var randomDir = Random.insideUnitCircle.normalized;
         var scatterDistance = Random.Range(0.5f, 1.5f);
-        var scatterTarget = transform.position + (Vector3)(randomDir * scatterDistance);
+        var scatterTarget = startPos + (Vector3)(randomDir * scatterDistance);
+        
+        var scatterDuration = totalDuration * 0.15f;
+        var suckDuration = totalDuration * 0.85f;
+
+        var shrinkDuration = suckDuration * 0.5f;
+        var shrinkDelay = suckDuration - shrinkDuration;
+
+        var endPos = new Vector3(0, -3f, 0);
+        var controlPoint = (scatterTarget + new Vector3(0, -5f, 0)) * 0.5f
+                           + new Vector3(Random.Range(-2f, 2f), Random.Range(1.5f, 2.5f), 0f);
 
         var seq = DOTween.Sequence();
 
-        seq.Append(transform.DOMove(scatterTarget, 0.3f).SetEase(Ease.OutQuad));
-        seq.Append(transform.DOMove(new Vector3(0, -3, 0), 0.7f).SetEase(Ease.InQuad));
-        
-        seq.Join(transform.DOScale(Vector3.zero, 0.7f));
-        seq.Join(transform.DORotate(new Vector3(0, 0, 360), 0.7f, RotateMode.FastBeyond360));
+        seq.Append(transform.DOMove(scatterTarget, scatterDuration).SetEase(Ease.OutQuad));
+
+        seq.Append(transform.DOPath(
+                new[] { scatterTarget, controlPoint, endPos },
+                suckDuration,
+                PathType.CatmullRom)
+            .SetEase(Ease.InOutCubic));
+
+        seq.Join(transform.DORotate(new Vector3(0, 0, 720f), suckDuration, RotateMode.FastBeyond360));
+
+        seq.Join(transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), shrinkDuration).SetDelay(shrinkDelay));
 
         seq.OnComplete(() => BubblePool.I.Pool.Release(this));
+        seq.Duration();
     }
     public void GetDamage(BubbleType type)
     {
     }
+
+    public static BubbleType GetRandomBubbleType => (BubbleType)Random.Range(1, 4);
 
 }
 

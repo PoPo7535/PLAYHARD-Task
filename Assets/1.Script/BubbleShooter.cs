@@ -15,15 +15,16 @@ public class BubbleShooter : MonoBehaviour
     public float viewDis = 10f;
     public float viewAngle = 90f;
     public float shootSpeed = 5f;
-    public int bubbleCount = 22;
     public bool activeAim = true;
     [NonSerialized] public Bubble predictionBubble;
     [NonSerialized] public RaycastHit2D[] hit = new RaycastHit2D[2];
-    private readonly int _segments = 5;
-
+    public int bubbleCount = 22;
+    private Bubble[] bubbles = new Bubble[3]; 
     public void Start()
     {
         InitPredictionBubble();
+        bubbles[0].SetType(Bubble.GetRandomBubbleType);
+        bubbles[1].SetType(Bubble.GetRandomBubbleType);
     }
     private void InitPredictionBubble()
     {
@@ -36,9 +37,50 @@ public class BubbleShooter : MonoBehaviour
         predictionBubble.transform.parent = transform;
     }
 
+    #region 버블 장전
+    public void SwapBubble()
+    {
+        var type = bubbles[0].MyType;
+        if(bubbles[2].MyType == BubbleType.None)
+        {
+            bubbles[0].SetType(bubbles[1].MyType);
+            bubbles[1].SetType(type);
+        }
+        else
+        {
+            bubbles[0].SetType(bubbles[1].MyType);
+            bubbles[1].SetType(bubbles[2].MyType);
+            bubbles[2].SetType(type);
+        }
+    }
+
+    public void RefillBubble()
+    {
+        if (bubbles[0].MyType == BubbleType.None)
+        {
+            bubbles[0].SetType(Bubble.GetRandomBubbleType);
+            return;
+        }
+        if (bubbles[2].MyType == BubbleType.None)
+        {
+            bubbles[2].SetType(Bubble.GetRandomBubbleType);
+            return;
+        }
+    }
+
+    public BubbleType CurrentBubble
+    {
+        get { return BubbleType.Bule; }
+    }
+
+    #endregion
+
+
+    #region 버블 슛
     public void ShooterTrajectory()
     {
         // 각도 계산
+        predictionBubble.SetType(CurrentBubble);
         var screenPos = Utile.GetPointerWorldPosition();
         var dir = (screenPos - (Vector2)transform.position).normalized;
         if (viewAngle / 2f < Vector2.Angle(transform.up, dir))
@@ -49,14 +91,14 @@ public class BubbleShooter : MonoBehaviour
         SetVisualsActive(true);
         // 예측 궤도
         ShooterTrajectory(dir);
-        if (hit.IsUnityNull()) return;
+        if (hit.IsUnityNull()) 
+            return;
 
         // 예측 샷
         if (hit[1].transform.CompareTag("Bubble"))
             predictionBubble.transform.position = HexagonGrid.I.GetPosToWorldPos(hit[1].point);
     }
-
-    public void ShooterTrajectory(Vector2 dir)
+    private void ShooterTrajectory(Vector2 dir)
     {
         var newHit= Physics2D.CircleCast(transform.position, 0.1f, dir, viewDis);
         newHit = PointOffSet(newHit);
@@ -80,6 +122,8 @@ public class BubbleShooter : MonoBehaviour
             return hit;
         }
     }
+    #endregion
+
     public void SetVisualsActive(bool isActive)
     {
         lineParticle.gameObject.SetActive(isActive);
@@ -88,6 +132,7 @@ public class BubbleShooter : MonoBehaviour
 
 
 #if UNITY_EDITOR
+    private readonly int _segments = 5;
     public bool showGizmos = true;
     public void OnDrawGizmos()
     {

@@ -20,7 +20,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         AddHexLine(11);
     }
 
-    public bool FindDropBubbles(Vector2Int[] findStartCellPos)
+    public bool FindDropBubbles(Vector2Int[] findStartCellPos, float dur)
     {
         Queue<Vector2Int> queue = new();
         foreach (var vec in findStartCellPos)
@@ -60,7 +60,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
                 if (false == _hexVisitList[i][j] &&
                     true == _hexList[i][j])
                 {
-                    _hexList[i][j].Drop();
+                    _hexList[i][j].Drop(dur);
                     check = true;
                 }
 
@@ -103,7 +103,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         _hexList[cell.y][cell.x] = bubble;
     }
 
-    public bool ConnectedDropBubbles(Vector2Int cell, int dropCount = 3)
+    public bool ConnectedDropBubbles(Vector2Int cell, float dur)
     {
         var firstVisit = new Vector2Int[] { new(-1, 0), new(1, 0), new(-1, 1), new(0, 1), new(-1, -1), new(0, -1) };
         var secondVisit = new Vector2Int[] { new(-1, 0), new(1, 0), new(0, 1), new(1, 1), new(0, -1), new(1, -1) };
@@ -137,11 +137,11 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
             }
         }
         bool check = false;
-        if (dropCount <= cellList.Count)
+        if (3 <= cellList.Count)
         {
             check = true;
             foreach (var bubble in cellList)
-                bubble.Drop();
+                bubble.Drop(dur);
         }
         VisitClear();
         return check;

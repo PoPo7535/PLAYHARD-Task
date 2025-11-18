@@ -39,7 +39,7 @@ public class AimStep : IGameStep
         _shooter.activeAim = false;
         var bubble = BubblePool.I.Pool.Get();
         bubble.transform.position = _shooter.transform.position;
-        bubble.SetType(BubbleType.Bule);
+        bubble.SetType(_shooter.CurrentBubble);
         bubble.transform.DOMove(HexagonGrid.I.GetPosToWorldPos(_shooter.hit[0].point), _shooter.shootSpeed)
             .SetSpeedBased()
             .SetEase(Ease.Linear).
@@ -51,16 +51,6 @@ public class AimStep : IGameStep
                     {
                         BubblePool.I.Pool.Release(bubble);
                         GameStepManager.I.ChangeStep(GameStepType.BubbleFall);
-                        // var cell = HexagonGrid.I.GetPosToCellNumber(shooter.predictionBubble.transform.position);
-                        // HexagonGrid.I.SetBubble(bubble, cell, BubbleType.Bule);
-                        // var bubbleList = HexagonGrid.I.CollectConnectedBubbles(cell);
-                        // if (3 <= bubbleList.Count)
-                        // {
-                        //     foreach (var bubble in bubbleList)
-                        //         bubble.Drop();
-                        // }
-                        // HexagonGrid.I.FindDropBubble(new Vector2Int[] { new(3, 4), new(7, 4) });
-                        // shooter.activeAim = true;
                     });
             });
     }
