@@ -37,7 +37,7 @@ public class AimStep : IGameStep
     private void BubbleShot()
     {
         _shooter.activeAim = false;
-        var bubble = BubblePool.I.Pool.Get();
+        var bubble = ObjectPoolManager.I.BubblePool.Get();
         bubble.transform.position = _shooter.transform.position;
         bubble.SetType(_shooter.CurrentBubble);
         bubble.transform.DOMove(HexagonGrid.I.GetPosToWorldPos(_shooter.hit[0].point), _shooter.shootSpeed)
@@ -49,7 +49,7 @@ public class AimStep : IGameStep
                     .SetEase(Ease.Linear)
                     .SetSpeedBased().OnComplete(() =>
                     {
-                        BubblePool.I.Pool.Release(bubble);
+                        ObjectPoolManager.I.BubblePool.Release(bubble);
                         GameStepManager.I.ChangeStep(GameStepType.BubbleFall);
                     });
             });

@@ -54,7 +54,7 @@ public class Bubble : SerializedMonoBehaviour, IBubble
 
         seq.Join(transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), shrinkDuration).SetDelay(shrinkDelay));
 
-        seq.OnComplete(() => BubblePool.I.Pool.Release(this));
+        seq.OnComplete(() => ObjectPoolManager.I.BubblePool.Release(this));
         seq.Duration();
     }
     public void GetDamage(BubbleType type)

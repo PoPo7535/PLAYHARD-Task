@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using DG.Tweening;
 using Sirenix.OdinInspector;
@@ -11,24 +12,37 @@ using Vector3 = UnityEngine.Vector3;
 
 public class BubbleShooter : MonoBehaviour
 {
+    [NonSerialized] public Bubble predictionBubble;
+    [NonSerialized] public RaycastHit2D[] hit = new RaycastHit2D[2];
+    [NonSerialized] public bool activeAim = true;
+    private SpriteRenderer sr;
     public LineParticle lineParticle;
     public float viewDis = 10f;
     public float viewAngle = 90f;
     public float shootSpeed = 5f;
-    public bool activeAim = true;
-    [NonSerialized] public Bubble predictionBubble;
-    [NonSerialized] public RaycastHit2D[] hit = new RaycastHit2D[2];
+    
     public int bubbleCount = 22;
-    private Bubble[] bubbles = new Bubble[3]; 
+    private Bubble[] bubbles = new Bubble[3];
     public void Start()
     {
         InitPredictionBubble();
+        InitBubbles();
+    }
+
+    public void InitBubbles()
+    {
+        var points = Utile.GetCirclePoints(transform.position, sr.size.y, 3);
+        bubbles[0] = ObjectPoolManager.I.BubblePool.Get();
+        bubbles[1] = ObjectPoolManager.I.BubblePool.Get();
+        bubbles[2] = ObjectPoolManager.I.BubblePool.Get();
         bubbles[0].SetType(Bubble.GetRandomBubbleType);
         bubbles[1].SetType(Bubble.GetRandomBubbleType);
+        bubbles[1].SetType(BubbleType.None);
+
     }
     private void InitPredictionBubble()
     {
-        predictionBubble = BubblePool.I.Pool.Get();
+        predictionBubble = ObjectPoolManager.I.BubblePool.Get();
         predictionBubble.tag = "Untagged";
         predictionBubble.gameObject.SetActive(false);
         predictionBubble.SetType(BubbleType.Bule);

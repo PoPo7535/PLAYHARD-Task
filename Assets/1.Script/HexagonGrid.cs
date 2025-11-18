@@ -93,7 +93,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         }
         var pos = GetCellNumberToPos(cell);
         if (bubble.IsUnityNull())
-            bubble = BubblePool.I.Pool.Get();
+            bubble = ObjectPoolManager.I.BubblePool.Get();
         bubble.SetType(type);
         
         bubble.transform.SetParent(transform);

@@ -1,15 +1,21 @@
+using System;
 using UnityEngine;
 using UnityEngine.Pool;
 using Utility;
 
-public class BubblePool : Singleton<BubblePool>
+public class ObjectPoolManager : Singleton<ObjectPoolManager>
 {
-    public  ObjectPool<Bubble> Pool { get; private set; }
-
+    public ObjectPool<Bubble> BubblePool { get; private set; }
     public Bubble _bulletPrefab;
+
     public void Awake()
     {
-        Pool = new ObjectPool<Bubble>(
+        InitBubblePool();
+    }
+
+    private void InitBubblePool()
+    {
+        BubblePool = new ObjectPool<Bubble>(
             createFunc: () => {
                 var bubble = Instantiate(_bulletPrefab);
                 return bubble;

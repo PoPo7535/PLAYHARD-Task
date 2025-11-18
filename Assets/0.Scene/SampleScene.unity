@@ -462,7 +462,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: -927165415388806271, guid: 7410672044eb8a1428232d444ebb34f3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -505,8 +505,8 @@ MonoBehaviour:
   viewDis: 10
   viewAngle: 130
   shootSpeed: 5
-  bubbleCount: 22
   activeAim: 1
+  bubbleCount: 22
   showGizmos: 1
 --- !u!1 &450386802
 GameObject:
