@@ -15,16 +15,16 @@ public static class Utile
         return Camera.main.ScreenToWorldPoint(screenPos);
     }
     
-    public static List<Vector3> GetCirclePoints(Vector3 center, float radius, int count)
+    public static List<Vector3> GetCirclePoints(Vector3 center, float radius, int count, float angleOffsetDegrees)
     {
         var points = new List<Vector3>();
-
+        float angleOffset = angleOffsetDegrees * Mathf.Deg2Rad;
         for (int i = 0; i < count; i++)
         {
-            float angle = 2 * Mathf.PI * i / count; // 각도 (라디안)
-            float x = center.x + radius * Mathf.Cos(angle);
-            float y = center.y + radius * Mathf.Sin(angle); // 2D 기준 (XY 평면)
-            points.Add(new Vector3(x, y, center.z)); // Z값은 그대로 유지
+            var angle = 2 * Mathf.PI * i / count + angleOffset; 
+            var x = center.x + radius * Mathf.Cos(angle);
+            var y = center.y + radius * Mathf.Sin(angle);
+            points.Add(new Vector3(x, y, center.z));
         }
         return points;
     }

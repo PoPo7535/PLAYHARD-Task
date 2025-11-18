@@ -501,11 +501,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f3ee52271ba6dc498dffe1c5e2898b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sr: {fileID: 352334905}
   lineParticle: {fileID: 1920600599}
   viewDis: 10
   viewAngle: 130
   shootSpeed: 5
-  activeAim: 1
   bubbleCount: 22
   showGizmos: 1
 --- !u!1 &450386802

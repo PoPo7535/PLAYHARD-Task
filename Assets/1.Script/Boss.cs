@@ -29,8 +29,8 @@ public class Boss : MonoBehaviour
 
     public void Start()
     {
-        BubbleLineRefill(_leftLine);
-        BubbleLineRefill(_rightLine);
+        _ = BubbleLineRefill(_leftLine);
+        _ = BubbleLineRefill(_rightLine);
     }
 
     public async UniTask BubbleLineRefill()

@@ -1,45 +1,29 @@
 using System;
-using System.Collections.Generic;
-using System.Numerics;
-using DG.Tweening;
 using Sirenix.OdinInspector;
-using Sirenix.Utilities;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
-public class BubbleShooter : MonoBehaviour
+public partial class BubbleShooter : MonoBehaviour
 {
     [NonSerialized] public Bubble predictionBubble;
     [NonSerialized] public RaycastHit2D[] hit = new RaycastHit2D[2];
     [NonSerialized] public bool activeAim = true;
-    private SpriteRenderer sr;
-    public LineParticle lineParticle;
-    public float viewDis = 10f;
-    public float viewAngle = 90f;
+    [SerializeField] private SpriteRenderer sr;
+    [SerializeField] private LineParticle lineParticle;
+    [SerializeField] private float viewDis = 10f;
+    [SerializeField] private float viewAngle = 90f;
     public float shootSpeed = 5f;
     
     public int bubbleCount = 22;
-    private Bubble[] bubbles = new Bubble[3];
     public void Start()
     {
         InitPredictionBubble();
         InitBubbles();
     }
 
-    public void InitBubbles()
-    {
-        var points = Utile.GetCirclePoints(transform.position, sr.size.y, 3);
-        bubbles[0] = ObjectPoolManager.I.BubblePool.Get();
-        bubbles[1] = ObjectPoolManager.I.BubblePool.Get();
-        bubbles[2] = ObjectPoolManager.I.BubblePool.Get();
-        bubbles[0].SetType(Bubble.GetRandomBubbleType);
-        bubbles[1].SetType(Bubble.GetRandomBubbleType);
-        bubbles[1].SetType(BubbleType.None);
 
-    }
     private void InitPredictionBubble()
     {
         predictionBubble = ObjectPoolManager.I.BubblePool.Get();
@@ -51,46 +35,6 @@ public class BubbleShooter : MonoBehaviour
         predictionBubble.transform.parent = transform;
     }
 
-    #region 버블 장전
-    public void SwapBubble()
-    {
-        var type = bubbles[0].MyType;
-        if(bubbles[2].MyType == BubbleType.None)
-        {
-            bubbles[0].SetType(bubbles[1].MyType);
-            bubbles[1].SetType(type);
-        }
-        else
-        {
-            bubbles[0].SetType(bubbles[1].MyType);
-            bubbles[1].SetType(bubbles[2].MyType);
-            bubbles[2].SetType(type);
-        }
-    }
-
-    public void RefillBubble()
-    {
-        if (bubbles[0].MyType == BubbleType.None)
-        {
-            bubbles[0].SetType(Bubble.GetRandomBubbleType);
-            return;
-        }
-        if (bubbles[2].MyType == BubbleType.None)
-        {
-            bubbles[2].SetType(Bubble.GetRandomBubbleType);
-            return;
-        }
-    }
-
-    public BubbleType CurrentBubble
-    {
-        get { return BubbleType.Bule; }
-    }
-
-    #endregion
-
-
-    #region 버블 슛
     public void ShooterTrajectory()
     {
         // 각도 계산
@@ -136,7 +80,6 @@ public class BubbleShooter : MonoBehaviour
             return hit;
         }
     }
-    #endregion
 
     public void SetVisualsActive(bool isActive)
     {

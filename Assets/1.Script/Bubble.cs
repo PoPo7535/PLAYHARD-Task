@@ -10,7 +10,7 @@ public class Bubble : SerializedMonoBehaviour, IBubble
     [Serial] private Dictionary<BubbleType, Sprite> _typeSprites = new();
     [Serial] private SpriteRenderer _spriteRenderer;
     private Vector2Int Cell => HexagonGrid.I.GetPosToCellNumber(transform.position);
-    public BubbleType MyType { get; private set; }
+    [ShowInInspector] public BubbleType MyType { get; private set; }
     
     
     public void SetType(BubbleType type)
@@ -19,7 +19,6 @@ public class Bubble : SerializedMonoBehaviour, IBubble
         _spriteRenderer.sprite = _typeSprites[type];
     }
 
-    public float suckDuration = 1f;
 
     public void Drop(float totalDuration = 1f)
     {
