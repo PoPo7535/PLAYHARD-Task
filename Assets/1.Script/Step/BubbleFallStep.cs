@@ -24,7 +24,7 @@ public class BubbleFallStep : IGameStep
         if (dropCheck1 || dropCheck2)
             await Task.Delay(Delay);
         
-        _shooter.activeAim = true;
+        _shooter.activeControll = true;
         GameStepManager.I.ChangeStep(GameStepType.Boss);
     }
     public void Exit() { }

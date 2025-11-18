@@ -11,7 +11,7 @@ public class AimStep : IGameStep
 
     public void GameSteUpdate()
     {
-        if (false == _shooter.activeAim)
+        if (false == _shooter.activeControll)
             return;
         if (Input.GetMouseButtonUp(0) ||
             Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
@@ -36,7 +36,7 @@ public class AimStep : IGameStep
 
     private void BubbleShot()
     {
-        _shooter.activeAim = false;
+        _shooter.activeControll = false;
         var bubble = ObjectPoolManager.I.BubblePool.Get();
         bubble.transform.position = _shooter.transform.position;
         bubble.SetType(_shooter.CurrentBubble);

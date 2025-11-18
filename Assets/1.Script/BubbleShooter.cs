@@ -9,13 +9,12 @@ public partial class BubbleShooter : MonoBehaviour
 {
     [NonSerialized] public Bubble predictionBubble;
     [NonSerialized] public RaycastHit2D[] hit = new RaycastHit2D[2];
-    [NonSerialized] public bool activeAim = true;
+    [NonSerialized] public bool activeControll = true;
     [SerializeField] private SpriteRenderer sr;
     [SerializeField] private LineParticle lineParticle;
     [SerializeField] private float viewDis = 10f;
     [SerializeField] private float viewAngle = 90f;
-    public float shootSpeed = 5f;
-    
+    public float shootSpeed = 10f;
     public int bubbleCount = 22;
     public void Start()
     {
@@ -40,8 +39,11 @@ public partial class BubbleShooter : MonoBehaviour
         // 각도 계산
         predictionBubble.SetType(CurrentBubble);
         var screenPos = Utile.GetPointerWorldPosition();
-        var dir = (screenPos - (Vector2)transform.position).normalized;
-        if (viewAngle / 2f < Vector2.Angle(transform.up, dir))
+        var dir = (screenPos - (Vector2)transform.position);
+        var distance = dir.magnitude;
+        dir.Normalize();
+        if (viewAngle / 2f < Vector2.Angle(transform.up, dir) ||
+            distance < sr.size.x / 2.1f)
         {
             SetVisualsActive(false);
             return;
@@ -58,14 +60,15 @@ public partial class BubbleShooter : MonoBehaviour
     }
     private void ShooterTrajectory(Vector2 dir)
     {
-        var newHit= Physics2D.CircleCast(transform.position, 0.1f, dir, viewDis);
+        var layerMask = ~LayerMask.GetMask("Ignore Raycast");
+        var newHit = Physics2D.CircleCast(transform.position, 0.1f, dir, viewDis, layerMask: layerMask);
         newHit = PointOffSet(newHit);
         hit[1] = hit[0] = newHit;
         if (hit[0].transform.CompareTag("Wall"))
         {
             var point = hit[0].centroid - (dir * 0.01f);
             dir = Vector3.Reflect(dir, hit[0].normal);
-            newHit = Physics2D.CircleCast(point, 0.1f, dir, viewDis);
+            newHit = Physics2D.CircleCast(point, 0.1f, dir, viewDis, layerMask: layerMask);
             newHit = PointOffSet(newHit);
             hit[1] = newHit;
         }

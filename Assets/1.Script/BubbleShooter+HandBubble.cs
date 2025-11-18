@@ -2,37 +2,42 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Sirenix.OdinInspector;
-using UnityEngine;
+using UnityEngine;using UnityEngine.EventSystems;
 
-public partial class BubbleShooter 
+public partial class BubbleShooter : IPointerDownHandler
 {
     private readonly Bubble[] _bubbles = new Bubble[3];
-    private Vector3[] _twoPos = new Vector3[2];
-    private Vector3[] _twoAroundPos = new Vector3[2];
     private Vector3[] _threePos = new Vector3[3];
     private Vector3[] _threeAroundPos = new Vector3[3];
     private bool IsTwoBubble => _bubbles[2].MyType == BubbleType.None;
+    public BubbleType CurrentBubble => BubbleType.Bule;
+
     private void InitBubbles()
     {
-        _twoPos = Utile.GetCirclePoints(transform.position, sr.size.y / 2, 2, 90).ToArray();
-        _twoAroundPos = Utile.GetCirclePoints(transform.position, sr.size.y / 2, 2, 180).ToArray();
         _threePos = Utile.GetCirclePoints(transform.position, sr.size.y / 2, 3, 90).ToArray();
-        _threeAroundPos = Utile.GetCirclePoints(transform.position, sr.size.y / 2, 3, 135).ToArray();
+        _threeAroundPos = Utile.GetCirclePoints(transform.position, sr.size.y / 2, 3, 145).ToArray();
 
         for (int i = 0; i < _bubbles.Length; ++i)
         {
             _bubbles[i] = ObjectPoolManager.I.BubblePool.Get();
+            _bubbles[i].gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
             _bubbles[i].transform.localScale = new Vector3(0.35f, 0.35f, 1);
-            _bubbles[i].transform.position = _threeAroundPos[i];
+            _bubbles[i].transform.position = _threePos[i];
             _bubbles[i].SetType(Bubble.GetRandomBubbleType);
         }
 
         _bubbles[2].SetType(BubbleType.None);
     }
-    
-    [Button]
-    public async Task SwapBubble()
+    public async void OnPointerDown(PointerEventData eventData)
     {
+        await SwapBubble();
+    }
+
+    private async Task SwapBubble()
+    {
+        if (false == activeControll)
+            return;
+        activeControll = false;
         if(IsTwoBubble)
         {
             _ = SwapBubbles(0, 1);
@@ -48,12 +53,11 @@ public partial class BubbleShooter
             (_bubbles[0], _bubbles[1], _bubbles[2]) = (_bubbles[2], _bubbles[1], _bubbles[0]);
 
         }
+        activeControll = true;
 
         async Task SwapBubbles(int targetIndex, int endIndex)
         {
-            var targetPos = IsTwoBubble ? _twoPos[endIndex] : _threePos[endIndex];
-            var targetAroundPos = IsTwoBubble ? _twoAroundPos[targetIndex] : _threeAroundPos[targetIndex];
-            await RotateAroundPoint(_bubbles[targetIndex].transform, targetPos,targetAroundPos);
+            await RotateAroundPoint(_bubbles[targetIndex].transform, _threePos[endIndex],_threeAroundPos[targetIndex]);
         }
     }
 
@@ -88,6 +92,6 @@ public partial class BubbleShooter
         await new WaitUntil(() => isComplete);
     }
 
-    public BubbleType CurrentBubble => BubbleType.Bule;
+
 
 }
