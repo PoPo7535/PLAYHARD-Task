@@ -10,7 +10,9 @@ public partial class BubbleShooter : IPointerDownHandler
     private Vector3[] _threePos = new Vector3[3];
     private Vector3[] _threeAroundPos = new Vector3[3];
     private bool IsTwoBubble => _bubbles[2].MyType == BubbleType.None;
-    public BubbleType CurrentBubble => BubbleType.Bule;
+    public BubbleType CurrentBubbleType => _bubbles[0].MyType;
+    public int bubbleCount = 22;
+
 
     private void InitBubbles()
     {
@@ -33,11 +35,15 @@ public partial class BubbleShooter : IPointerDownHandler
         await SwapBubble();
     }
 
+    public void SetHandBubbleType(int index ,BubbleType type)
+    {
+        _bubbles[index].SetType(type);
+    }
     private async Task SwapBubble()
     {
-        if (false == activeControll)
+        if (false == _activeControll)
             return;
-        activeControll = false;
+        _activeControll = false;
         if(IsTwoBubble)
         {
             _ = SwapBubbles(0, 1);
@@ -47,34 +53,52 @@ public partial class BubbleShooter : IPointerDownHandler
         }
         else
         {
-            _ = SwapBubbles(0, 1);
-            _ = SwapBubbles(1, 2);
-            await SwapBubbles(2, 0);
+            _ = SwapBubbles(0, 2);
+            _ = SwapBubbles(2, 1);
+            await SwapBubbles(1, 0);
             (_bubbles[0], _bubbles[1], _bubbles[2]) = (_bubbles[2], _bubbles[1], _bubbles[0]);
 
         }
-        activeControll = true;
+        _activeControll = true;
 
-        async Task SwapBubbles(int targetIndex, int endIndex)
-        {
-            await RotateAroundPoint(_bubbles[targetIndex].transform, _threePos[endIndex],_threeAroundPos[targetIndex]);
-        }
+
     }
 
-    public void RefillBubble()
+    public async Task RefillBubble()
     {
-        if (_bubbles[0].MyType == BubbleType.None)
+        _activeControll = false;
+        if (IsTwoBubble)
         {
-            _bubbles[0].SetType(Bubble.GetRandomBubbleType);
-            return;
+            Scale(0);
+            _ =  SwapBubbles(0, 1, 0);
+            await SwapBubbles(1, 0);
+            (_bubbles[0], _bubbles[1]) = (_bubbles[1], _bubbles[0]);
         }
-        if (_bubbles[2].MyType == BubbleType.None)
+        else
         {
-            _bubbles[2].SetType(Bubble.GetRandomBubbleType);
-            return;
+            Scale(0);
+            _ = SwapBubbles(0, 2, 0);
+            _ = SwapBubbles(2, 1);
+            await SwapBubbles(1, 0);
+            (_bubbles[0], _bubbles[1], _bubbles[2]) = (_bubbles[2], _bubbles[1], _bubbles[0]);
+        }
+        _activeControll = true;
+
+        void Scale(int index)
+        {
+            _bubbles[index].SetType(Bubble.GetRandomBubbleType);
+            _bubbles[index].transform.localScale = Vector3.zero;
+            _bubbles[index].transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.Linear);
         }
     }
-
+    private async Task SwapBubbles(int targetIndex, int endIndex, float dur = 0.3f)
+    {
+        await RotateAroundPoint(
+            _bubbles[targetIndex].transform, 
+            _threePos[endIndex], 
+            _threeAroundPos[targetIndex],
+            dur);
+    }
     private async Task RotateAroundPoint(Transform target, Vector3 targetPosition, Vector3 controlPoint, float dur = 0.3f)
     {
         // 경로 설정: 현재 → 곡선 → 목표

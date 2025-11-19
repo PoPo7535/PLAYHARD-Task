@@ -17,15 +17,14 @@ public class BubbleFallStep : IGameStep
 
     public async void Enter()
     {
-        var cell = HexagonGrid.I.GetPosToCellNumber(_shooter.predictionBubble.transform.position);
-        HexagonGrid.I.SetBubble(null, cell, BubbleType.Bule);
+        var cell = HexagonGrid.I.GetPosToCellNumber(_shooter._predictionBubble.transform.position);
         var dropCheck1 = HexagonGrid.I.ConnectedDropBubbles(cell, dur);
         var dropCheck2= HexagonGrid.I.FindDropBubbles(new Vector2Int[] { new(3, 4), new(7, 4) }, dur);
         if (dropCheck1 || dropCheck2)
             await Task.Delay(Delay);
         
-        _shooter.activeControll = true;
-        GameStepManager.I.ChangeStep(GameStepType.Boss);
+        _shooter._activeControll = true;
+        GameStepManager.I.ChangeNextStep();
     }
     public void Exit() { }
 }

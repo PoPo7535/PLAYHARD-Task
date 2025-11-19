@@ -11,12 +11,12 @@ public class AimStep : IGameStep
 
     public void GameSteUpdate()
     {
-        if (false == _shooter.activeControll)
+        if (false == _shooter._activeControll)
             return;
         if (Input.GetMouseButtonUp(0) ||
             Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
         {
-            if (_shooter.predictionBubble.gameObject.activeSelf)
+            if (_shooter._predictionBubble.gameObject.activeSelf)
                 BubbleShot();
             _shooter.SetVisualsActive(false);
         }
@@ -36,21 +36,23 @@ public class AimStep : IGameStep
 
     private void BubbleShot()
     {
-        _shooter.activeControll = false;
+        _shooter._activeControll = false;
         var bubble = ObjectPoolManager.I.BubblePool.Get();
         bubble.transform.position = _shooter.transform.position;
-        bubble.SetType(_shooter.CurrentBubble);
-        bubble.transform.DOMove(HexagonGrid.I.GetPosToWorldPos(_shooter.hit[0].point), _shooter.shootSpeed)
+        bubble.SetType(_shooter.CurrentBubbleType);
+        bubble.transform.DOMove(HexagonGrid.I.GetPosToWorldPos(_shooter._hit[0].point), _shooter.shootSpeed)
             .SetSpeedBased()
             .SetEase(Ease.Linear).
             OnComplete(() =>
             {
-                bubble.transform.DOMove(_shooter.predictionBubble.transform.position, _shooter.shootSpeed)
+                bubble.transform.DOMove(_shooter._predictionBubble.transform.position, _shooter.shootSpeed)
                     .SetEase(Ease.Linear)
                     .SetSpeedBased().OnComplete(() =>
                     {
-                        ObjectPoolManager.I.BubblePool.Release(bubble);
-                        GameStepManager.I.ChangeStep(GameStepType.BubbleFall);
+                        var cell = HexagonGrid.I.GetPosToCellNumber(_shooter._predictionBubble.transform.position);
+                        HexagonGrid.I.SetBubble(bubble, cell, _shooter.CurrentBubbleType);
+                        GameStepManager.I.ChangeNextStep();
+
                     });
             });
     }

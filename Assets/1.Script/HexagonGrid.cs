@@ -86,6 +86,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
 
     public void SetBubble(Bubble bubble, Vector2Int cell, BubbleType type)
     {
+
         if (type == BubbleType.None)
         {
             _hexList[cell.y][cell.x] = null;

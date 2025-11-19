@@ -12,7 +12,7 @@ public class BossStep : IGameStep
     public async void Enter()
     {
         await _boss.BubbleLineRefill();
-        GameStepManager.I.ChangeStep(GameStepType.Aim);
+        GameStepManager.I.ChangeNextStep();
     }
     public void Exit() { }
 }

@@ -7,39 +7,41 @@ using Vector3 = UnityEngine.Vector3;
 
 public partial class BubbleShooter : MonoBehaviour
 {
-    [NonSerialized] public Bubble predictionBubble;
-    [NonSerialized] public RaycastHit2D[] hit = new RaycastHit2D[2];
-    [NonSerialized] public bool activeControll = true;
+    [NonSerialized] public Bubble _predictionBubble;
+    [NonSerialized] public readonly RaycastHit2D[] _hit = new RaycastHit2D[2];
+    [NonSerialized] public bool _activeControll = true;
     [SerializeField] private SpriteRenderer sr;
+    
     [SerializeField] private LineParticle lineParticle;
     [SerializeField] private float viewDis = 10f;
     [SerializeField] private float viewAngle = 90f;
     public float shootSpeed = 10f;
-    public int bubbleCount = 22;
+    private Vector3 _shotPos;
     public void Start()
     {
         InitPredictionBubble();
         InitBubbles();
+        _shotPos = transform.position + new Vector3(0, sr.size.y / 2, 0);
     }
 
 
     private void InitPredictionBubble()
     {
-        predictionBubble = ObjectPoolManager.I.BubblePool.Get();
-        predictionBubble.tag = "Untagged";
-        predictionBubble.gameObject.SetActive(false);
-        predictionBubble.SetType(BubbleType.Bule);
-        predictionBubble.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 50);
-        predictionBubble.GetComponent<CircleCollider2D>().enabled = false;
-        predictionBubble.transform.parent = transform;
+        _predictionBubble = ObjectPoolManager.I.BubblePool.Get();
+        _predictionBubble.tag = "Untagged";
+        _predictionBubble.gameObject.SetActive(false);
+        _predictionBubble.SetType(BubbleType.Bule);
+        _predictionBubble.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 50);
+        _predictionBubble.GetComponent<CircleCollider2D>().enabled = false;
+        _predictionBubble.transform.parent = transform;
     }
 
     public void ShooterTrajectory()
     {
         // 각도 계산
-        predictionBubble.SetType(CurrentBubble);
+        _predictionBubble.SetType(CurrentBubbleType);
         var screenPos = Utile.GetPointerWorldPosition();
-        var dir = (screenPos - (Vector2)transform.position);
+        var dir = (screenPos - (Vector2)_shotPos);
         var distance = dir.magnitude;
         dir.Normalize();
         if (viewAngle / 2f < Vector2.Angle(transform.up, dir) ||
@@ -51,30 +53,30 @@ public partial class BubbleShooter : MonoBehaviour
         SetVisualsActive(true);
         // 예측 궤도
         ShooterTrajectory(dir);
-        if (hit.IsUnityNull()) 
+        if (_hit.IsUnityNull()) 
             return;
 
         // 예측 샷
-        if (hit[1].transform.CompareTag("Bubble"))
-            predictionBubble.transform.position = HexagonGrid.I.GetPosToWorldPos(hit[1].point);
+        if (_hit[1].transform.CompareTag("Bubble"))
+            _predictionBubble.transform.position = HexagonGrid.I.GetPosToWorldPos(_hit[1].point);
     }
     private void ShooterTrajectory(Vector2 dir)
     {
         var layerMask = ~LayerMask.GetMask("Ignore Raycast");
-        var newHit = Physics2D.CircleCast(transform.position, 0.1f, dir, viewDis, layerMask: layerMask);
+        var newHit = Physics2D.CircleCast(_shotPos, 0.1f, dir, viewDis, layerMask: layerMask);
         newHit = PointOffSet(newHit);
-        hit[1] = hit[0] = newHit;
-        if (hit[0].transform.CompareTag("Wall"))
+        _hit[1] = _hit[0] = newHit;
+        if (_hit[0].transform.CompareTag("Wall"))
         {
-            var point = hit[0].centroid - (dir * 0.01f);
-            dir = Vector3.Reflect(dir, hit[0].normal);
+            var point = _hit[0].centroid - (dir * 0.01f);
+            dir = Vector3.Reflect(dir, _hit[0].normal);
             newHit = Physics2D.CircleCast(point, 0.1f, dir, viewDis, layerMask: layerMask);
             newHit = PointOffSet(newHit);
-            hit[1] = newHit;
+            _hit[1] = newHit;
         }
-        lineParticle.SetPosition(0, transform.position);
-        lineParticle.SetPosition(1, hit[0].centroid);
-        lineParticle.SetPosition(2, hit[1].centroid);
+        lineParticle.SetPosition(0, _shotPos);
+        lineParticle.SetPosition(1, _hit[0].centroid);
+        lineParticle.SetPosition(2, _hit[1].centroid);
         return;
 
         RaycastHit2D PointOffSet(RaycastHit2D hit)
@@ -87,7 +89,7 @@ public partial class BubbleShooter : MonoBehaviour
     public void SetVisualsActive(bool isActive)
     {
         lineParticle.gameObject.SetActive(isActive);
-        predictionBubble.gameObject.SetActive(isActive);   
+        _predictionBubble.gameObject.SetActive(isActive);   
     }
 
 
@@ -100,7 +102,7 @@ public partial class BubbleShooter : MonoBehaviour
             return;
         Gizmos.color = Color.blue;
 
-        Vector2 origin = transform.position;
+        Vector2 origin = _shotPos;
         var step = viewAngle / _segments;
 
         // 각도 시작 = -viewAngle/2
