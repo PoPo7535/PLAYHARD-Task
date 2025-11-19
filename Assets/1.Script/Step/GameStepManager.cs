@@ -28,7 +28,7 @@ public class GameStepManager : LocalSingleton<GameStepManager>
         
         var refillStep = new BubbleRefillStep();
         refillStep.Init(shooter);
-        _bubbleRefillStep = bossStep;
+        _bubbleRefillStep = refillStep;
         
         _currentStep = GameStepType.Aim;
     }

@@ -23,7 +23,7 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
             actionOnGet: (bullet) => 
             {
                 bullet.gameObject.SetActive(true);
-                bullet.transform.localScale = new Vector3(0.48f, 0.48f, 1f);
+                bullet.transform.localScale = Bubble.Scale;
                 bullet.transform.rotation = Quaternion.identity;
             },
             actionOnRelease: (bullet) => {

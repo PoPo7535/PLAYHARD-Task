@@ -88,7 +88,7 @@ public partial class BubbleShooter : IPointerDownHandler
         {
             _bubbles[index].SetType(Bubble.GetRandomBubbleType);
             _bubbles[index].transform.localScale = Vector3.zero;
-            _bubbles[index].transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.Linear);
+            _bubbles[index].transform.DOScale(new Vector3(0.35f,0.35f,0.35f), 0.3f).SetEase(Ease.Linear);
         }
     }
     private async Task SwapBubbles(int targetIndex, int endIndex, float dur = 0.3f)

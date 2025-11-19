@@ -20,7 +20,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         AddHexLine(11);
     }
 
-    public bool FindDropBubbles(Vector2Int[] findStartCellPos, float dur)
+    public int FindDropBubbles(Vector2Int[] findStartCellPos, float dur, float off = 0.1f)
     {
         Queue<Vector2Int> queue = new();
         foreach (var vec in findStartCellPos)
@@ -54,18 +54,20 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
             }
         }
 
-        var check = false;
+        var offDur = off;
+        var count = 0;
         for (int i = 0; i < _hexVisitList.Count; ++i)
             for (int j = 0; j < _hexVisitList[i].Length; ++j)
                 if (false == _hexVisitList[i][j] &&
                     true == _hexList[i][j])
                 {
-                    _hexList[i][j].Drop(dur);
-                    check = true;
+                    _hexList[i][j].Drop(dur,offDur);
+                    offDur += off;
+                    ++count;
                 }
 
         VisitClear();
-        return check;
+        return count;
     }
 
 
@@ -104,7 +106,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         _hexList[cell.y][cell.x] = bubble;
     }
 
-    public bool ConnectedDropBubbles(Vector2Int cell, float dur)
+    public int ConnectedDropBubbles(Vector2Int cell, float dur, float off = 0.1f)
     {
         var firstVisit = new Vector2Int[] { new(-1, 0), new(1, 0), new(-1, 1), new(0, 1), new(-1, -1), new(0, -1) };
         var secondVisit = new Vector2Int[] { new(-1, 0), new(1, 0), new(0, 1), new(1, 1), new(0, -1), new(1, -1) };
@@ -137,15 +139,19 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
                 }
             }
         }
-        bool check = false;
+        var offDur = off;
+        var count = 0;
         if (3 <= cellList.Count)
         {
-            check = true;
             foreach (var bubble in cellList)
-                bubble.Drop(dur);
+            {
+                bubble.Drop(dur, offDur);
+                ++count;
+                offDur =+ off;
+            }
         }
         VisitClear();
-        return check;
+        return count;
     }
     
     public void MoveCellBubble(Vector2Int startCell, Vector2Int endCell, Action endCallBack = null, float dur = 0.1f)

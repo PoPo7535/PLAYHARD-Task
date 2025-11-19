@@ -9,7 +9,8 @@ public class Bubble : SerializedMonoBehaviour, IBubble
 {
     [Serial] private Dictionary<BubbleType, Sprite> _typeSprites = new();
     [Serial] private SpriteRenderer _spriteRenderer;
-    private Vector2Int Cell => HexagonGrid.I.GetPosToCellNumber(transform.position);
+    public Vector2Int Cell => HexagonGrid.I.GetPosToCellNumber(transform.position);
+    public static Vector3 Scale => new(0.48f, 0.48f, 1f);
     [ShowInInspector] public BubbleType MyType { get; private set; }
     
     
@@ -20,11 +21,11 @@ public class Bubble : SerializedMonoBehaviour, IBubble
     }
 
 
-    public void Drop(float totalDuration = 1f)
+    public void Drop(float totalDuration = 1f, float off = 0.1f)
     {
         HexagonGrid.I.SetBubble(null, Cell, BubbleType.None);
         var startPos = transform.position;
-
+        totalDuration += off;
         var randomDir = Random.insideUnitCircle.normalized;
         var scatterDistance = Random.Range(0.5f, 1.5f);
         var scatterTarget = startPos + (Vector3)(randomDir * scatterDistance);
@@ -71,4 +72,5 @@ public enum BubbleType
     Bule,
     Yellow,
     Red,
+    Energy
 }

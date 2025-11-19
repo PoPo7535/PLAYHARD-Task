@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7b4bb77e8198a1a48a12604cdf5c32d0
+guid: 2f460f64f648106469e6722e9f4cb087
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2861835273597911131
-    second: Bubble_Rainbow_0
+      213: 5999814771561753870
+    second: color_effect_ball_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 980
+  spritePixelsToUnits: 350
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Bubble_Rainbow_0
+      name: color_effect_ball_0
       rect:
         serializedVersion: 2
-        x: 79
-        y: 57
-        width: 860
-        height: 898
+        x: 0
+        y: 0
+        width: 378
+        height: 378
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5af73873bf7b848d0800000000000000
-      internalID: -2861835273597911131
+      spriteID: e0d64111fbf934350800000000000000
+      internalID: 5999814771561753870
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Bubble_Rainbow_0: -2861835273597911131
+      color_effect_ball_0: 5999814771561753870
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
