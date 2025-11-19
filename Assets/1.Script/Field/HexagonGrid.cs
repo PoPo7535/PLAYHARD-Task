@@ -97,7 +97,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
             AddHexLine(1 + cell.y - _hexList.Count);
         _hexList[cell.y][cell.x] = bubble;
     }
-    public float ConnectedDropBubbles(Vector2Int cell, float dur, float off = 0.1f)
+    public float ConnectedPopBubbles(Vector2Int cell, float dur, float off = 0.1f)
     {
         var type = _hexList[cell.y][cell.x].MyType;
         var cellQueue = new Queue<Vector2Int>();
@@ -134,7 +134,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         {
             foreach (var bubble in cellList)
             {
-                bubble.Drop(dur + offDur);
+                bubble.Pop(dur + offDur);
                 newDur = dur;
                 offDur =+ off;
             }
@@ -161,7 +161,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
             {
                 newDur = dur;
                 offDur =+ off;
-                _hexList[newCell.y][newCell.x].PoP(dur + offDur);
+                _hexList[newCell.y][newCell.x].Pop(dur + offDur);
             }
         }
         return newDur + offDur;

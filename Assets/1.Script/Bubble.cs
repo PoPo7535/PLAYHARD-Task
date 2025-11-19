@@ -20,55 +20,27 @@ public class Bubble : SerializedMonoBehaviour
         _spriteRenderer.sprite = _typeSprites[type];
     }
 
-    public void Drop(float totalDuration = 1f)
+    public void Drop(float dur = 1f)
     {
         HexagonGrid.I.SetBubble(null, Cell, BubbleType.None);
 
         Move(transform, 
             new Vector3(0, -3, 0), 
-            totalDuration, 
+            dur, 
             () => { ObjectPoolManager.I.BubblePool.Release(this); });
-        // var startPos = transform.position;
-        //
-        // var randomDir = Random.insideUnitCircle.normalized;
-        // var scatterDistance = Random.Range(0.5f, 1.5f);
-        // var scatterTarget = startPos + (Vector3)(randomDir * scatterDistance);
-        //
-        // var scatterDuration = totalDuration * 0.15f;
-        // var suckDuration = totalDuration * 0.85f;
-        //
-        // var shrinkDuration = suckDuration * 0.5f;
-        // var shrinkDelay = suckDuration - shrinkDuration;
-        //
-        // var endPos = new Vector3(0, -3f, 0);
-        // var controlPoint = (scatterTarget + new Vector3(0, -5f, 0)) * 0.5f
-        //                    + new Vector3(Random.Range(-2f, 2f), Random.Range(1.5f, 2.5f), 0f);
-        //
-        // var seq = DOTween.Sequence();
-        //
-        // seq.Append(transform.DOMove(scatterTarget, scatterDuration).SetEase(Ease.OutQuad));
-        //
-        // seq.Append(transform.DOPath(
-        //         new[] { scatterTarget, controlPoint, endPos },
-        //         suckDuration,
-        //         PathType.CatmullRom)
-        //     .SetEase(Ease.InOutCubic));
-        //
-        // seq.Join(transform.DORotate(new Vector3(0, 0, 720f), suckDuration, RotateMode.FastBeyond360));
-        // seq.Join(transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), shrinkDuration).SetDelay(shrinkDelay));
-        // seq.OnComplete(() => ObjectPoolManager.I.BubblePool.Release(this));
     }
-    public void PoP(float dur = 1f)
+    public void Pop(float dur = 1f)
     {
         var star = ObjectPoolManager.I.BubbleStarPool.Get();
         star.Set(MyType);
         star.transform.position = transform.position;
-        Move(star.transform, GameStepManager.I.energy.gamePos, dur, 
+        Move(star.transform, 
+            GameStepManager.I.energy.gamePos, 
+            dur, 
             () => { ObjectPoolManager.I.BubbleStarPool.Release(star); } );
         HexagonGrid.I.SetBubble(null, Cell, BubbleType.None);
         ObjectPoolManager.I.BubblePool.Release(this);
     }
-    // var endPos = new Vector3(0, -3f, 0);
 
     private void Move(Transform tr, Vector3 endPos, float totalDuration, Action completeActive)
     {
