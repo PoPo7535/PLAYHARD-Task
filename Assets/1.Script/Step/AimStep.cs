@@ -3,54 +3,50 @@ using UnityEngine;
 
 public class AimStep : IGameStep
 {
-    private BubbleShooter _shooter;
-    public void Init(BubbleShooter shooter)
-    {
-        _shooter = shooter;
-    }
+    private BubbleShooter Shooter => GameStepManager.I.shooter;
 
     public void GameSteUpdate()
     {
-        if (false == _shooter.activeControll)
+        if (false == Shooter.activeControll)
             return;
         if (Input.GetMouseButtonUp(0) ||
             Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
         {
-            if (_shooter._predictionBubble.gameObject.activeSelf)
+            if (Shooter._predictionBubble.gameObject.activeSelf)
                 BubbleShot();
-            _shooter.SetVisualsActive(false);
+            Shooter.SetVisualsActive(false);
         }
 
         if (Input.GetMouseButtonDown(0) ||
             Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
-            _shooter.ShooterTrajectory();
+            Shooter.ShooterTrajectory();
         }
         
         if (Input.GetMouseButton(0) ||
             Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
         {
-            _shooter.ShooterTrajectory();
+            Shooter.ShooterTrajectory();
         }
     }
 
     private void BubbleShot()
     {
-        _shooter.activeControll = false;
+        Shooter.activeControll = false;
         var bubble = ObjectPoolManager.I.BubblePool.Get();
-        bubble.transform.position = _shooter.transform.position;
-        bubble.SetType(_shooter.CurrentBubbleType);
-        _shooter.SetHandBubbleType(0, BubbleType.None);
-        bubble.transform.DOMove(HexagonGrid.I.GetPosToWorldPos(_shooter._hit[0].point), _shooter.shootSpeed)
+        bubble.transform.position = Shooter.transform.position;
+        bubble.SetType(Shooter.CurrentBubbleType);
+        Shooter.SetHandBubbleType(0, BubbleType.None);
+        bubble.transform.DOMove(HexagonGrid.I.GetPosToWorldPos(Shooter._hit[0].point), Shooter.shootSpeed)
             .SetSpeedBased()
             .SetEase(Ease.Linear).
             OnComplete(() =>
             {
-                bubble.transform.DOMove(_shooter._predictionBubble.transform.position, _shooter.shootSpeed)
+                bubble.transform.DOMove(Shooter._predictionBubble.transform.position, Shooter.shootSpeed)
                     .SetEase(Ease.Linear)
                     .SetSpeedBased().OnComplete(() =>
                     {
-                        var cell = _shooter._predictionBubble.Cell;
+                        var cell = Shooter._predictionBubble.Cell;
                         HexagonGrid.I.SetBubble(bubble, cell, bubble.MyType);
                         GameStepManager.I.ChangeNextStep();
                     });

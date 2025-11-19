@@ -15,12 +15,12 @@ public class BubbleEnergy : MonoBehaviour
     [SerializeField] private Button _button;
     [SerializeField] private Image _energyImg;
     [SerializeField] private Image _fillImg;
-    private Vector3 _gamePos;
+    [NonSerialized] public Vector3 gamePos;
     private float _energy = 0f;
 
     public void Start()
     {
-        _gamePos = Utile.UIToWorld(_rectTransform);
+        gamePos = Utile.UIToWorld(_rectTransform);
         _button.onClick.AddListener(OnClick);
     }
     
@@ -33,7 +33,7 @@ public class BubbleEnergy : MonoBehaviour
         _energy = 0;
         ActiveEnergyImg(false);
         var bubble = ObjectPoolManager.I.BubblePool.Get();
-        bubble.transform.position = _gamePos;
+        bubble.transform.position = gamePos;
         _ = _shooter.SetEnergyBubble(bubble);
     }
 

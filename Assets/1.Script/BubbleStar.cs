@@ -9,6 +9,7 @@ public class BubbleStar : MonoBehaviour
     public void Set(BubbleType bubble)
     {
         _sr.color = GetColor(bubble);
+        transform.rotation = Quaternion.Euler(0, 0, 0);
     }
     private Color GetColor(BubbleType bubble)
     {

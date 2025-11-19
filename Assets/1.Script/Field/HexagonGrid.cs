@@ -57,7 +57,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
                 if (false == _hexVisitList[i][j] &&
                     true == _hexList[i][j])
                 {
-                    _hexList[i][j].Drop(dur,offDur);
+                    _hexList[i][j].Drop(dur + offDur);
                     offDur += off;
                     newDur = dur;
                 }
@@ -134,7 +134,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         {
             foreach (var bubble in cellList)
             {
-                bubble.Drop(dur, offDur);
+                bubble.Drop(dur + offDur);
                 newDur = dur;
                 offDur =+ off;
             }
@@ -143,12 +143,14 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         VisitClear();
         return newDur + offDur;
     }
-    public float EnergyPopBubbles(Vector2Int cell)
+    public float EnergyPopBubbles(Vector2Int cell,float dur, float off = 0.1f)
     {
         var vis = 0 == cell.y % 2 ? GridDefine.FirstAreaLineVisit : GridDefine.SecondAreaLineVisit;
-        var count = 0;
         // _hexList[cell.y][cell.x].PoP();
         _hexList[cell.y][cell.x].SetType(BubbleType.None);
+        
+        var offDur = off;
+        var newDur = 0f;
         foreach (var vi in vis)
         {
             var newCell = cell + vi;
@@ -157,11 +159,12 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
                 newCell.y >= 0 && newCell.y < _hexList.Count &&
                 false == _hexList[newCell.y][newCell.x].IsUnityNull())
             {
-                _hexList[newCell.y][newCell.x].PoP();
-                ++count;
+                newDur = dur;
+                offDur =+ off;
+                _hexList[newCell.y][newCell.x].PoP(dur + offDur);
             }
         }
-        return 0.01f;
+        return newDur + offDur;
     }
     
     public void MoveCellBubble(Vector2Int startCell, Vector2Int endCell, Action endCallBack = null, float dur = 0.1f)

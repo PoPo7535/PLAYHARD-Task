@@ -605,6 +605,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shooter: {fileID: 352334907}
+  energy: {fileID: 1053237536}
   boss: {fileID: 174845088}
 --- !u!1 &519420028
 GameObject:

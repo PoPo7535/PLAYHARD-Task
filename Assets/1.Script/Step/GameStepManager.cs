@@ -5,7 +5,9 @@ using Utility;
 public class GameStepManager : LocalSingleton<GameStepManager>
 {
     public BubbleShooter shooter;
+    public BubbleEnergy energy;
     public Boss boss;
+    
     private GameStepType _currentStep;
     private IGameStep _aimStep;
     private IGameStep _bossStep;
@@ -15,19 +17,15 @@ public class GameStepManager : LocalSingleton<GameStepManager>
     private void Start()
     {
         var aimStep = new AimStep();
-        aimStep.Init(shooter);
         _aimStep = aimStep;
         
         var bubbleFallStep = new BubbleFallStep();
-        bubbleFallStep.Init(shooter);
         _bubbleFallStep = bubbleFallStep;
         
         var bossStep = new BossStep();
-        bossStep.Init(boss);
         _bossStep = bossStep;
         
         var refillStep = new BubbleRefillStep();
-        refillStep.Init(shooter);
         _bubbleRefillStep = refillStep;
         
         _currentStep = GameStepType.Aim;
