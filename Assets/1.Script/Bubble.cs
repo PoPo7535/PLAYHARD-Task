@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.UI;
 using Serial = UnityEngine.SerializeField;
-public class Bubble : SerializedMonoBehaviour, IBubble
+public class Bubble : SerializedMonoBehaviour
 {
     [Serial] private Dictionary<BubbleType, Sprite> _typeSprites = new();
     [Serial] private SpriteRenderer _spriteRenderer;
@@ -51,18 +51,17 @@ public class Bubble : SerializedMonoBehaviour, IBubble
             .SetEase(Ease.InOutCubic));
 
         seq.Join(transform.DORotate(new Vector3(0, 0, 720f), suckDuration, RotateMode.FastBeyond360));
-
         seq.Join(transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), shrinkDuration).SetDelay(shrinkDelay));
-
         seq.OnComplete(() => ObjectPoolManager.I.BubblePool.Release(this));
         seq.Duration();
     }
-    public void GetDamage(BubbleType type)
+    public void PoP()
     {
+        HexagonGrid.I.SetBubble(null, Cell, BubbleType.None);
+        ObjectPoolManager.I.BubblePool.Release(this);
     }
 
     public static BubbleType GetRandomBubbleType => (BubbleType)Random.Range(1, 4);
-
 }
 
 

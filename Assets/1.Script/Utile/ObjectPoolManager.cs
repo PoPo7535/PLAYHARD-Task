@@ -6,13 +6,40 @@ using Utility;
 public class ObjectPoolManager : Singleton<ObjectPoolManager>
 {
     public ObjectPool<Bubble> BubblePool { get; private set; }
-    public Bubble _bulletPrefab;
+    public ObjectPool<BubbleStar> BubbleStarPool { get; private set; }
+    [SerializeField] private Bubble _bulletPrefab;
+    [SerializeField] private BubbleStar _bulletStarPrefab;
 
     public void Awake()
     {
         InitBubblePool();
+        InitBubbleStarPool();
     }
 
+    private void InitBubbleStarPool()
+    {
+        BubbleStarPool = new ObjectPool<BubbleStar>(
+            createFunc: () => {
+                var bubble = Instantiate(_bulletStarPrefab);
+                return bubble;
+            },
+            actionOnGet: (bullet) => 
+            {
+                bullet.gameObject.SetActive(true);
+                bullet.transform.localScale = Bubble.Scale;
+                bullet.transform.rotation = Quaternion.identity;
+            },
+            actionOnRelease: (bullet) => {
+                bullet.gameObject.SetActive(false);
+            },
+            actionOnDestroy: (bullet) => {
+                Destroy(bullet.gameObject);
+            },
+            collectionCheck: false,
+            defaultCapacity: 10,
+            maxSize: 200
+        );
+    }
     private void InitBubblePool()
     {
         BubblePool = new ObjectPool<Bubble>(

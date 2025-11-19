@@ -5,10 +5,8 @@ using UnityEngine;
 
 public class BubbleFallStep : IGameStep
 {
-    private float dur = 2f;
-    private float off = 0.1f;
-    private int Delay => (int)(dur * 1000);
-    private int OffDelay => (int)(off * 1000);
+    private readonly float _dropDur = 2f;
+    private readonly float _off = 0.1f;
     public void Init(BubbleShooter shooter)
     {
         _shooter = shooter;
@@ -20,16 +18,16 @@ public class BubbleFallStep : IGameStep
     public async void Enter()
     {
         var cell = _shooter._predictionBubble.Cell;
+        var dropCheck1 = 0f;
         if (_shooter._predictionBubble.MyType == BubbleType.Energy)
-        {
-            
-        }
-        var dropCheck1 = HexagonGrid.I.ConnectedDropBubbles(cell, dur, off);
-        var dropCheck2= HexagonGrid.I.FindDropBubbles(new Vector2Int[] { new(3, 4), new(7, 4) }, dur, off);
+            dropCheck1 = HexagonGrid.I.EnergyPopBubbles(cell);
+        else
+            dropCheck1 = HexagonGrid.I.ConnectedDropBubbles(cell, _dropDur, _off);
+        var dropCheck2= HexagonGrid.I.FindDropBubbles(new Vector2Int[] { new(3, 4), new(7, 4) }, _dropDur, _off);
         if (1 <= dropCheck1 || 1 <= dropCheck2)
         {
-            var maxCount = Math.Max(dropCheck1, dropCheck2);
-            await Task.Delay(Delay + (OffDelay * maxCount));
+            var maxDur = Mathf.Max(dropCheck1, dropCheck2);
+            await Task.Delay((int)(maxDur * 1000));
         }
         _shooter.activeControll = true;
         GameStepManager.I.ChangeNextStep();

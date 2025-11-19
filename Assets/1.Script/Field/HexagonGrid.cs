@@ -20,7 +20,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         AddHexLine(11);
     }
 
-    public int FindDropBubbles(Vector2Int[] findStartCellPos, float dur, float off = 0.1f)
+    public float FindDropBubbles(Vector2Int[] findStartCellPos, float dur, float off = 0.1f)
     {
         Queue<Vector2Int> queue = new();
         foreach (var vec in findStartCellPos)
@@ -28,19 +28,15 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
             queue.Enqueue(vec);
             _hexVisitList[vec.y][vec.x] = true;
         }
-
-        var firstVisit = new Vector2Int[] { new(-1, 0), new(1, 0), new(-1, 1), new(0, 1) };
-        var secondVisit = new Vector2Int[] { new(-1, 0), new(1, 0), new(0, 1), new(1, 1) };
         
         while (queue.Count > 0)
         {
             var cell = queue.Dequeue();
             var row = 0 == cell.y % 2 ? FirstLineCount : SecondLineCount;
-            var visit = 0 == cell.y % 2 ? firstVisit : secondVisit;
+            var visit = 0 == cell.y % 2 ? GridDefine.FirstLineVisit : GridDefine.SecondLineVisit;
             foreach (var vec in visit)
             {
                 var findCell = vec + cell;
-
                 if (findCell.x >= 0 && findCell.x < row &&
                     findCell.y >= 0 && findCell.y < _hexList.Count)
                 {
@@ -55,7 +51,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         }
 
         var offDur = off;
-        var count = 0;
+        var newDur = 0f;
         for (int i = 0; i < _hexVisitList.Count; ++i)
             for (int j = 0; j < _hexVisitList[i].Length; ++j)
                 if (false == _hexVisitList[i][j] &&
@@ -63,14 +59,12 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
                 {
                     _hexList[i][j].Drop(dur,offDur);
                     offDur += off;
-                    ++count;
+                    newDur = dur;
                 }
 
         VisitClear();
-        return count;
+        return newDur + offDur;
     }
-
-
     private void VisitClear()
     {
         foreach (var arr in _hexVisitList)
@@ -85,10 +79,8 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
             _hexVisitList.Add(isFirstLine ? new bool[FirstLineCount] : new bool[SecondLineCount]);
         }
     }
-
     public void SetBubble(Bubble bubble, Vector2Int cell, BubbleType type)
     {
-
         if (type == BubbleType.None)
         {
             _hexList[cell.y][cell.x] = null;
@@ -105,11 +97,8 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
             AddHexLine(1 + cell.y - _hexList.Count);
         _hexList[cell.y][cell.x] = bubble;
     }
-
-    public int ConnectedDropBubbles(Vector2Int cell, float dur, float off = 0.1f)
+    public float ConnectedDropBubbles(Vector2Int cell, float dur, float off = 0.1f)
     {
-        var firstVisit = new Vector2Int[] { new(-1, 0), new(1, 0), new(-1, 1), new(0, 1), new(-1, -1), new(0, -1) };
-        var secondVisit = new Vector2Int[] { new(-1, 0), new(1, 0), new(0, 1), new(1, 1), new(0, -1), new(1, -1) };
         var type = _hexList[cell.y][cell.x].MyType;
         var cellQueue = new Queue<Vector2Int>();
         var cellList = new List<Bubble>();
@@ -120,7 +109,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         while (0 < cellQueue.Count)
         {
             cell = cellQueue.Dequeue();
-            var vis = 0 == cell.y % 2 ? firstVisit : secondVisit;
+            var vis = 0 == cell.y % 2 ? GridDefine.FirstLineVisit : GridDefine.SecondLineVisit;
             foreach (var vi in vis)
             {
                 var newCell = cell + vi;
@@ -140,18 +129,39 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
             }
         }
         var offDur = off;
-        var count = 0;
+        var newDur = 0f;
         if (3 <= cellList.Count)
         {
             foreach (var bubble in cellList)
             {
                 bubble.Drop(dur, offDur);
-                ++count;
+                newDur = dur;
                 offDur =+ off;
             }
         }
+        
         VisitClear();
-        return count;
+        return newDur + offDur;
+    }
+    public float EnergyPopBubbles(Vector2Int cell)
+    {
+        var vis = 0 == cell.y % 2 ? GridDefine.FirstAreaLineVisit : GridDefine.SecondAreaLineVisit;
+        var count = 0;
+        // _hexList[cell.y][cell.x].PoP();
+        _hexList[cell.y][cell.x].SetType(BubbleType.None);
+        foreach (var vi in vis)
+        {
+            var newCell = cell + vi;
+            var row = 0 == newCell.y % 2 ? FirstLineCount : SecondLineCount;
+            if (newCell.x >= 0 && newCell.x < row &&
+                newCell.y >= 0 && newCell.y < _hexList.Count &&
+                false == _hexList[newCell.y][newCell.x].IsUnityNull())
+            {
+                _hexList[newCell.y][newCell.x].PoP();
+                ++count;
+            }
+        }
+        return 0.01f;
     }
     
     public void MoveCellBubble(Vector2Int startCell, Vector2Int endCell, Action endCallBack = null, float dur = 0.1f)
