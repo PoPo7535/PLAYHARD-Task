@@ -2,6 +2,7 @@ using System;
 using Sirenix.OdinInspector;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
@@ -10,18 +11,19 @@ public partial class BubbleShooter : MonoBehaviour
     [NonSerialized] public Bubble _predictionBubble;
     [NonSerialized] public readonly RaycastHit2D[] _hit = new RaycastHit2D[2];
     [NonSerialized] public bool activeControll = true;
-    [SerializeField] private SpriteRenderer sr;
+    [SerializeField] private SpriteRenderer _sr;
     
-    [SerializeField] private LineParticle lineParticle;
-    [SerializeField] private float viewDis = 10f;
-    [SerializeField] private float viewAngle = 90f;
-    public float shootSpeed = 10f;
+    [SerializeField] private LineParticle _lineParticle;
+    [SerializeField] private float _viewDis = 10f;
+    [SerializeField] private float _viewAngle = 90f;
+    
     private Vector3 _shotPos;
+    public float shootSpeed = 10f;
     public void Start()
     {
         InitPredictionBubble();
         InitBubbles();
-        _shotPos = transform.position + new Vector3(0, sr.size.y / 2, 0);
+        _shotPos = transform.position + new Vector3(0, _sr.size.y / 2, 0);
     }
 
 
@@ -44,8 +46,8 @@ public partial class BubbleShooter : MonoBehaviour
         var dir = (screenPos - (Vector2)_shotPos);
         var distance = dir.magnitude;
         dir.Normalize();
-        if (viewAngle / 2f < Vector2.Angle(transform.up, dir) ||
-            distance < sr.size.x / 2.1f)
+        if (_viewAngle / 2f < Vector2.Angle(transform.up, dir) ||
+            distance < _sr.size.x / 2.1f)
         {
             SetVisualsActive(false);
             return;
@@ -63,20 +65,20 @@ public partial class BubbleShooter : MonoBehaviour
     private void ShooterTrajectory(Vector2 dir)
     {
         var layerMask = ~LayerMask.GetMask("Ignore Raycast");
-        var newHit = Physics2D.CircleCast(_shotPos, 0.1f, dir, viewDis, layerMask: layerMask);
+        var newHit = Physics2D.CircleCast(_shotPos, 0.1f, dir, _viewDis, layerMask: layerMask);
         newHit = PointOffSet(newHit);
         _hit[1] = _hit[0] = newHit;
         if (_hit[0].transform.CompareTag("Wall"))
         {
             var point = _hit[0].centroid - (dir * 0.01f);
             dir = Vector3.Reflect(dir, _hit[0].normal);
-            newHit = Physics2D.CircleCast(point, 0.1f, dir, viewDis, layerMask: layerMask);
+            newHit = Physics2D.CircleCast(point, 0.1f, dir, _viewDis, layerMask: layerMask);
             newHit = PointOffSet(newHit);
             _hit[1] = newHit;
         }
-        lineParticle.SetPosition(0, _shotPos);
-        lineParticle.SetPosition(1, _hit[0].centroid);
-        lineParticle.SetPosition(2, _hit[1].centroid);
+        _lineParticle.SetPosition(0, _shotPos);
+        _lineParticle.SetPosition(1, _hit[0].centroid);
+        _lineParticle.SetPosition(2, _hit[1].centroid);
         return;
 
         RaycastHit2D PointOffSet(RaycastHit2D hit)
@@ -88,7 +90,7 @@ public partial class BubbleShooter : MonoBehaviour
 
     public void SetVisualsActive(bool isActive)
     {
-        lineParticle.gameObject.SetActive(isActive);
+        _lineParticle.gameObject.SetActive(isActive);
         _predictionBubble.gameObject.SetActive(isActive);   
     }
 
@@ -98,25 +100,27 @@ public partial class BubbleShooter : MonoBehaviour
     public bool showGizmos = true;
     public void OnDrawGizmos()
     {
+        if (false == Application.isPlaying)
+            return;
         if (false == showGizmos)
             return;
         Gizmos.color = Color.blue;
 
         Vector2 origin = _shotPos;
-        var step = viewAngle / _segments;
+        var step = _viewAngle / _segments;
 
         // 각도 시작 = -viewAngle/2
-        var prevPoint = origin + DirFromAngle(-viewAngle / 2) * viewDis;
+        var prevPoint = origin + DirFromAngle(-_viewAngle / 2) * _viewDis;
 
         // 중심 → 양 끝 라인
         Gizmos.DrawLine(origin, prevPoint);
-        Gizmos.DrawLine(origin, origin + DirFromAngle(viewAngle / 2) * viewDis);
+        Gizmos.DrawLine(origin, origin + DirFromAngle(_viewAngle / 2) * _viewDis);
 
         // 원호 그리기
         for (int i = 1; i <= _segments; ++i)
         {
-            var curAngle = -viewAngle / 2 + step * i;
-            var nextPoint = origin + DirFromAngle(curAngle) * viewDis;
+            var curAngle = -_viewAngle / 2 + step * i;
+            var nextPoint = origin + DirFromAngle(curAngle) * _viewDis;
 
             Gizmos.DrawLine(prevPoint, nextPoint);
 

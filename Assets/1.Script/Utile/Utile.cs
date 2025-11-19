@@ -29,4 +29,17 @@ public static class Utile
         }
         return points;
     }
+    public static Vector3 UIToWorld(RectTransform ui)
+    {
+        Vector2 screen = RectTransformUtility.WorldToScreenPoint(null, ui.position);
+
+        float z = Mathf.Abs(Camera.main.transform.position.z);
+        return Camera.main.ScreenToWorldPoint(new Vector3(screen.x, screen.y, z));
+    }
+    public static Vector2 UIToWorldSize(RectTransform rect)
+    {
+        var pixelSize = rect.rect.size;
+        var worldPerPixel = (Camera.main.orthographicSize * 2f) / Screen.height;
+        return pixelSize * worldPerPixel;
+    }
 }

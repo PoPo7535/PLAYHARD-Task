@@ -20,6 +20,10 @@ public class BubbleFallStep : IGameStep
     public async void Enter()
     {
         var cell = _shooter._predictionBubble.Cell;
+        if (_shooter._predictionBubble.MyType == BubbleType.Energy)
+        {
+            
+        }
         var dropCheck1 = HexagonGrid.I.ConnectedDropBubbles(cell, dur, off);
         var dropCheck2= HexagonGrid.I.FindDropBubbles(new Vector2Int[] { new(3, 4), new(7, 4) }, dur, off);
         if (1 <= dropCheck1 || 1 <= dropCheck2)

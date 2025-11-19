@@ -11,13 +11,12 @@ public partial class BubbleShooter : IPointerDownHandler
     private Vector3[] _threeAroundPos = new Vector3[3];
     private bool IsTwoBubble => _bubbles[2].MyType == BubbleType.None;
     public BubbleType CurrentBubbleType => _bubbles[0].MyType;
-    public int bubbleCount = 22;
-
+    private Vector3 _energyBubblePos => _threePos[2];
 
     private void InitBubbles()
     {
-        _threePos = Utile.GetCirclePoints(transform.position, sr.size.y / 2, 3, 90).ToArray();
-        _threeAroundPos = Utile.GetCirclePoints(transform.position, sr.size.y / 2, 3, 145).ToArray();
+        _threePos = Utile.GetCirclePoints(transform.position, _sr.size.y / 2, 3, 90).ToArray();
+        _threeAroundPos = Utile.GetCirclePoints(transform.position, _sr.size.y / 2, 3, 145).ToArray();
 
         for (int i = 0; i < _bubbles.Length; ++i)
         {
@@ -32,7 +31,6 @@ public partial class BubbleShooter : IPointerDownHandler
     }
     public async void OnPointerDown(PointerEventData eventData)
     {
-        
         await SwapBubble();
     }
 
@@ -50,23 +48,23 @@ public partial class BubbleShooter : IPointerDownHandler
             _ = SwapBubbles(0, 1);
             await SwapBubbles(1, 0);
             (_bubbles[0], _bubbles[1]) = (_bubbles[1], _bubbles[0]);
-
         }
         else
         {
             _ = SwapBubbles(0, 2);
             _ = SwapBubbles(2, 1);
             await SwapBubbles(1, 0);
-            (_bubbles[0], _bubbles[1], _bubbles[2]) = (_bubbles[2], _bubbles[1], _bubbles[0]);
-
-        }
+            (_bubbles[0], _bubbles[1], _bubbles[2]) = (_bubbles[1], _bubbles[2], _bubbles[0]);
+        } 
         activeControll = true;
-
-
     }
-
     public async Task RefillBubble()
     {
+        if (_predictionBubble.MyType == BubbleType.Energy)
+        {
+            await SwapBubble();
+            return;
+        }
         activeControll = false;
         if (IsTwoBubble)
         {
@@ -81,7 +79,7 @@ public partial class BubbleShooter : IPointerDownHandler
             _ = SwapBubbles(0, 2, 0);
             _ = SwapBubbles(2, 1);
             await SwapBubbles(1, 0);
-            (_bubbles[0], _bubbles[1], _bubbles[2]) = (_bubbles[2], _bubbles[1], _bubbles[0]);
+            (_bubbles[0], _bubbles[1], _bubbles[2]) = (_bubbles[1], _bubbles[2], _bubbles[0]);
         }
         activeControll = true;
 
@@ -92,6 +90,22 @@ public partial class BubbleShooter : IPointerDownHandler
             _bubbles[index].transform.DOScale(new Vector3(0.35f,0.35f,0.35f), 0.3f).SetEase(Ease.Linear);
         }
     }
+
+    public async Task SetEnergyBubble(Bubble bubble)
+    {
+        activeControll = false;
+        var isComplete = false;
+        bubble.SetType(BubbleType.Energy);
+        bubble.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+        bubble.transform
+            .DOMove(_energyBubblePos, 0.3f)
+            .SetEase(Ease.Linear)
+            .OnComplete(() => { isComplete = true; });
+        await new WaitUntil(() => isComplete);
+        _bubbles[2] = bubble;
+        activeControll = true;
+    }
+    
     private async Task SwapBubbles(int targetIndex, int endIndex, float dur = 0.3f)
     {
         await RotateAroundPoint(
@@ -103,7 +117,7 @@ public partial class BubbleShooter : IPointerDownHandler
     private async Task RotateAroundPoint(Transform target, Vector3 targetPosition, Vector3 controlPoint, float dur = 0.3f)
     {
         // 경로 설정: 현재 → 곡선 → 목표
-        var path = new Vector3[]
+        var path = new[]
         {
             target.position,
             controlPoint,
@@ -116,7 +130,4 @@ public partial class BubbleShooter : IPointerDownHandler
             .SetEase(Ease.InOutCubic).OnComplete(() => isComplete = true);
         await new WaitUntil(() => isComplete);
     }
-
-
-
 }
