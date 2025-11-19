@@ -32,6 +32,7 @@ public partial class BubbleShooter : IPointerDownHandler
     }
     public async void OnPointerDown(PointerEventData eventData)
     {
+        
         await SwapBubble();
     }
 
@@ -41,9 +42,9 @@ public partial class BubbleShooter : IPointerDownHandler
     }
     private async Task SwapBubble()
     {
-        if (false == _activeControll)
+        if (false == activeControll)
             return;
-        _activeControll = false;
+        activeControll = false;
         if(IsTwoBubble)
         {
             _ = SwapBubbles(0, 1);
@@ -59,14 +60,14 @@ public partial class BubbleShooter : IPointerDownHandler
             (_bubbles[0], _bubbles[1], _bubbles[2]) = (_bubbles[2], _bubbles[1], _bubbles[0]);
 
         }
-        _activeControll = true;
+        activeControll = true;
 
 
     }
 
     public async Task RefillBubble()
     {
-        _activeControll = false;
+        activeControll = false;
         if (IsTwoBubble)
         {
             Scale(0);
@@ -82,7 +83,7 @@ public partial class BubbleShooter : IPointerDownHandler
             await SwapBubbles(1, 0);
             (_bubbles[0], _bubbles[1], _bubbles[2]) = (_bubbles[2], _bubbles[1], _bubbles[0]);
         }
-        _activeControll = true;
+        activeControll = true;
 
         void Scale(int index)
         {

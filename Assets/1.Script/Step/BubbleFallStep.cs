@@ -27,7 +27,7 @@ public class BubbleFallStep : IGameStep
             var maxCount = Math.Max(dropCheck1, dropCheck2);
             await Task.Delay(Delay + (OffDelay * maxCount));
         }
-        _shooter._activeControll = true;
+        _shooter.activeControll = true;
         GameStepManager.I.ChangeNextStep();
     }
     public void Exit() { }

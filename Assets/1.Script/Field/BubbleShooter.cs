@@ -9,7 +9,7 @@ public partial class BubbleShooter : MonoBehaviour
 {
     [NonSerialized] public Bubble _predictionBubble;
     [NonSerialized] public readonly RaycastHit2D[] _hit = new RaycastHit2D[2];
-    [NonSerialized] public bool _activeControll = true;
+    [NonSerialized] public bool activeControll = true;
     [SerializeField] private SpriteRenderer sr;
     
     [SerializeField] private LineParticle lineParticle;
