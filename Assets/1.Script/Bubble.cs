@@ -31,13 +31,23 @@ public class Bubble : SerializedMonoBehaviour
     }
     public void Pop(float dur = 1f)
     {
+        if (false == GameStepManager.I.energy.canEnergyCharge)
+        {
+            HexagonGrid.I.SetBubble(null, Cell, BubbleType.None);
+            ObjectPoolManager.I.BubblePool.Release(this);
+            return;
+        }
         var star = ObjectPoolManager.I.BubbleStarPool.Get();
         star.Set(MyType);
         star.transform.position = transform.position;
         Move(star.transform, 
             GameStepManager.I.energy.gamePos, 
-            dur, 
-            () => { ObjectPoolManager.I.BubbleStarPool.Release(star); } );
+            dur,
+            () =>
+            {
+                ObjectPoolManager.I.BubbleStarPool.Release(star);
+                GameStepManager.I.energy.AddEnergy(7, 2);
+            } );
         HexagonGrid.I.SetBubble(null, Cell, BubbleType.None);
         ObjectPoolManager.I.BubblePool.Release(this);
     }

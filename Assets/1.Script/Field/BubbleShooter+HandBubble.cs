@@ -11,7 +11,7 @@ public partial class BubbleShooter : IPointerDownHandler
     private Vector3[] _threeAroundPos = new Vector3[3];
     private bool IsTwoBubble => _bubbles[2].MyType == BubbleType.None;
     public BubbleType CurrentBubbleType => _bubbles[0].MyType;
-    private Vector3 _energyBubblePos => _threePos[2];
+
 
     private void InitBubbles()
     {
@@ -29,6 +29,8 @@ public partial class BubbleShooter : IPointerDownHandler
 
         _bubbles[2].SetType(BubbleType.None);
     }
+
+
     public async void OnPointerDown(PointerEventData eventData)
     {
         await SwapBubble();
@@ -37,6 +39,40 @@ public partial class BubbleShooter : IPointerDownHandler
     public void SetHandBubbleType(int index ,BubbleType type)
     {
         _bubbles[index].SetType(type);
+    }
+    public void SetEnergyBubble(Bubble bubble, int setEnergyIndex)
+    {
+        activeControll = false;
+        bubble.SetType(BubbleType.Energy);
+        bubble.transform
+            .DOMove(_threePos[setEnergyIndex], 0.3f)
+            .SetEase(Ease.Linear)
+            .OnComplete(() =>
+            {
+                ObjectPoolManager.I.BubblePool.Release(bubble);
+                activeControll = true;
+                _bubbles[setEnergyIndex].SetType(BubbleType.Energy);
+            });
+    }
+    public async Task SendEnergy()
+    {
+        activeControll = false;
+        var isComplete = false;
+        var bubble = ObjectPoolManager.I.BubblePool.Get();
+        bubble.SetType(_bubbles[0].MyType);
+        _bubbles[0].SetType(BubbleType.None);
+        bubble.transform.position = _bubbles[0].transform.position;
+        bubble.transform.localScale = new Vector3(0.35f, 0.35f, 1);
+        bubble.transform.DOMove(GameStepManager.I.energy.gamePos, 0.3f).OnComplete(() =>
+        {
+            ObjectPoolManager.I.BubblePool.Release(bubble);
+            isComplete = true;
+        });
+        await new WaitUntil(() => isComplete);
+        var fullCharge = GameStepManager.I.energy.AddEnergy(25, 0);
+        if (false == fullCharge)
+            await RefillBubble();
+        activeControll = true;
     }
     private async Task SwapBubble()
     {
@@ -65,7 +101,9 @@ public partial class BubbleShooter : IPointerDownHandler
             await SwapBubble();
             return;
         }
+        
         activeControll = false;
+
         if (IsTwoBubble)
         {
             Scale(0);
@@ -90,22 +128,6 @@ public partial class BubbleShooter : IPointerDownHandler
             _bubbles[index].transform.DOScale(new Vector3(0.35f,0.35f,0.35f), 0.3f).SetEase(Ease.Linear);
         }
     }
-
-    public async Task SetEnergyBubble(Bubble bubble)
-    {
-        activeControll = false;
-        var isComplete = false;
-        bubble.SetType(BubbleType.Energy);
-        bubble.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-        bubble.transform
-            .DOMove(_energyBubblePos, 0.3f)
-            .SetEase(Ease.Linear)
-            .OnComplete(() => { isComplete = true; });
-        await new WaitUntil(() => isComplete);
-        _bubbles[2] = bubble;
-        activeControll = true;
-    }
-    
     private async Task SwapBubbles(int targetIndex, int endIndex, float dur = 0.3f)
     {
         await RotateAroundPoint(

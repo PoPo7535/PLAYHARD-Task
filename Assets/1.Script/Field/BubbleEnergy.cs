@@ -1,22 +1,28 @@
 using System;
-using System.Threading.Tasks;
-using Cysharp.Threading.Tasks.Triggers;
 using DG.Tweening;
-using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class BubbleEnergy : MonoBehaviour
 {
-    [SerializeField] private BubbleShooter _shooter;
+    private BubbleShooter shooter => GameStepManager.I.shooter;
     [SerializeField] private RectTransform _rectTransform;
     [SerializeField] private Button _button;
     [SerializeField] private Image _energyImg;
     [SerializeField] private Image _fillImg;
     [NonSerialized] public Vector3 gamePos;
-    private float _energy = 0f;
+    private bool IsFullEnergy => 100f <= Energy;
+    public bool canEnergyCharge = true;
+    private float _energy;
+    private float Energy
+    {
+        get => _energy;
+        set
+        {
+            _fillImg.fillAmount = 1 - (value / 100);
+            _energy = value;
+        }
+    }
 
     public void Start()
     {
@@ -26,27 +32,39 @@ public class BubbleEnergy : MonoBehaviour
     
     public void OnClick()
     {
-        if (false == _shooter.activeControll)
+        if (false == canEnergyCharge)
             return;
-        // if (_energy < 100f)
-        //     return;
-        _energy = 0;
+        if (false == shooter.activeControll)
+            return;
+        if (IsFullEnergy)
+            return;
+        _ = shooter.SendEnergy();
+    }
+
+    private void SetEnergyBubble(int setEnergyIndex)
+    {
         ActiveEnergyImg(false);
         var bubble = ObjectPoolManager.I.BubblePool.Get();
         bubble.transform.position = gamePos;
-        _ = _shooter.SetEnergyBubble(bubble);
+        shooter.SetEnergyBubble(bubble, setEnergyIndex);
     }
 
+    public bool AddEnergy(int addEnergy, int setEnergyIndex)
+    {
+        if (false == canEnergyCharge)
+            return false;
+        Energy += addEnergy;
+        if (IsFullEnergy)
+        {
+            SetEnergyBubble(setEnergyIndex);
+            Energy = 0;
+            canEnergyCharge = false;
+            return true;
+        }
+        return false;
+    }
     private void ActiveEnergyImg(bool active)
     {
-        _fillImg.fillAmount = 1;
         _energyImg.rectTransform.DOScale(active ? Vector3.one : Vector3.zero, 0.3f);
-    }
-    public void Foo()
-    {
-        Debug.Log(Utile.UIToWorld(_rectTransform));
-    }
-    public void AddEnergy(float energy)
-    {
     }
 }
