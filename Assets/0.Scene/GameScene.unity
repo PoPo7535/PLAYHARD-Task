@@ -578,6 +578,7 @@ MonoBehaviour:
   _bulletPrefab: {fileID: 8122352200081681018, guid: d9dc3f80ff13f0949987184b18abc8ff, type: 3}
   _bulletStarPrefab: {fileID: -2758753555459229458, guid: aaffee0c84af06c488524ebd9c97f85d, type: 3}
   _BubbleScorePrefab: {fileID: 4709423149220721388, guid: ff70b5524d40a054ab6945d24fb34358, type: 3}
+  _BubbleAttackPrefab: {fileID: 3567945083990978728, guid: 6748a82c2cba07044a93e68b86348bb3, type: 3}
 --- !u!4 &450386804
 Transform:
   m_ObjectHideFlags: 0
@@ -1590,7 +1591,7 @@ GameObject:
   - component: {fileID: 1853025906}
   - component: {fileID: 1853025905}
   m_Layer: 0
-  m_Name: BackGround_0
+  m_Name: BackGround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

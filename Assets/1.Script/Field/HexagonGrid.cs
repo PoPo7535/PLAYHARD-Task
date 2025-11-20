@@ -122,12 +122,12 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
                false == _hexList[cell.y][cell.x].IsUnityNull() &&
                false == _hexVisitList[cell.y][cell.x];
     }
-    public void SetBubble(Bubble bubble, Vector2Int cell, BubbleType type)
+    public Bubble SetBubble(Bubble bubble, Vector2Int cell, BubbleType type)
     {
         if (type == BubbleType.None)
         {
             _hexList[cell.y][cell.x] = null;
-            return;
+            return null;
         }
         var pos = GetCellNumberToPos(cell);
         if (bubble.IsUnityNull())
@@ -139,6 +139,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         if (cell.y == _hexList.Count)
             AddHexLine(1 + cell.y - _hexList.Count);
         _hexList[cell.y][cell.x] = bubble;
+        return bubble;
     }
     public float ConnectedPopBubbles(Vector2Int cell, float dur, float off = 0.1f)
     {
