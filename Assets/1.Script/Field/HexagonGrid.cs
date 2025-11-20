@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using Sirenix.OdinInspector;
+using DG.Tweening.Core;
 using Unity.VisualScripting;
 using UnityEngine;
 using Utility;
@@ -32,20 +32,14 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         while (queue.Count > 0)
         {
             var cell = queue.Dequeue();
-            var row = 0 == cell.y % 2 ? FirstLineCount : SecondLineCount;
             var visit = 0 == cell.y % 2 ? GridDefine.FirstLineVisit : GridDefine.SecondLineVisit;
             foreach (var vec in visit)
             {
                 var findCell = vec + cell;
-                if (findCell.x >= 0 && findCell.x < row &&
-                    findCell.y >= 0 && findCell.y < _hexList.Count)
+                if (Area(findCell))
                 {
-                    if (false == _hexList[findCell.y][findCell.x].IsUnityNull() &&
-                        false == _hexVisitList[findCell.y][findCell.x])
-                    {
-                        queue.Enqueue(findCell);
-                        _hexVisitList[findCell.y][findCell.x] = true;
-                    }
+                    queue.Enqueue(findCell);
+                    _hexVisitList[findCell.y][findCell.x] = true;
                 }
             }
         }
@@ -79,6 +73,54 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
             _hexVisitList.Add(isFirstLine ? new bool[FirstLineCount] : new bool[SecondLineCount]);
         }
     }
+
+    private Queue<Bubble> GetBoomBubbles(Vector2Int cell, Vector2Int[] first, Vector2Int[] second)
+    {
+        Queue<Bubble> queue = new();
+        var vis = 0 == cell.y % 2 ? first : second;
+        foreach (var vi in vis)
+        {
+            var newCell = cell + vi;
+            if (Area(newCell))
+            {
+                if (_hexList[newCell.y][newCell.x].MyType == BubbleType.Boom)
+                {
+                    queue.Enqueue(_hexList[newCell.y][newCell.x]);
+                    _hexVisitList[newCell.y][newCell.x] = true;
+                }
+            }
+        }
+        return queue;
+    }
+
+    // private void BoomBubbles(Queue<Bubble> queue, float dur, float off)
+    // {
+    //     while (0 < queue.Count)
+    //     {
+    //         var bubble = queue.Dequeue();
+    //         bubble.Pop(dur + off);
+    //         Debugger.Log(bubble.MyType);
+    //         var vis = 0 == bubble.Cell.y % 2 ? GridDefine.FirstLineVisit : GridDefine.SecondLineVisit;
+    //         foreach (var vi in vis)
+    //         {
+    //             var newCell = bubble.Cell + vi;
+    //             if (Area(newCell))
+    //             {
+    //                 _hexList[newCell.y][newCell.x].Pop(dur + off);
+    //                 _hexVisitList[newCell.y][newCell.x] = true;
+    //             }
+    //         }
+    //     }
+    // }
+
+    public bool Area(Vector2Int cell)
+    {
+        var row = 0 == cell.y % 2 ? FirstLineCount : SecondLineCount;
+        return cell.x >= 0 && cell.x < row &&
+               cell.y >= 0 && cell.y < _hexList.Count &&
+               false == _hexList[cell.y][cell.x].IsUnityNull() &&
+               false == _hexVisitList[cell.y][cell.x];
+    }
     public void SetBubble(Bubble bubble, Vector2Int cell, BubbleType type)
     {
         if (type == BubbleType.None)
@@ -99,11 +141,13 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
     }
     public float ConnectedPopBubbles(Vector2Int cell, float dur, float off = 0.1f)
     {
+        var baseCell = cell;
         var type = _hexList[cell.y][cell.x].MyType;
         var cellQueue = new Queue<Vector2Int>();
         var cellList = new List<Bubble>();
         cellQueue.Enqueue(cell);
         cellList.Add(_hexList[cell.y][cell.x]);
+        // var queue = GetBoomBubbles(baseCell, GridDefine.FirstLineVisit, GridDefine.SecondLineVisit);
         _hexVisitList[cell.y][cell.x] = true;
 
         while (0 < cellQueue.Count)
@@ -113,11 +157,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
             foreach (var vi in vis)
             {
                 var newCell = cell + vi;
-                var row = 0 == newCell.y % 2 ? FirstLineCount : SecondLineCount;
-                if (newCell.x >= 0 && newCell.x < row &&
-                    newCell.y >= 0 && newCell.y < _hexList.Count &&
-                    false == _hexList[newCell.y][newCell.x].IsUnityNull() &&
-                    false == _hexVisitList[newCell.y][newCell.x])
+                if (Area(newCell))
                 {
                     if (_hexList[newCell.y][newCell.x].MyType == type)
                     {
@@ -128,6 +168,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
                 }
             }
         }
+        
         var offDur = off;
         var newDur = 0f;
         if (3 <= cellList.Count)
@@ -139,31 +180,34 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
                 offDur =+ off;
             }
         }
-        
+
+        // BoomBubbles(queue, dur, offDur);
         VisitClear();
         return newDur + offDur;
     }
     public float EnergyPopBubbles(Vector2Int cell,float dur, float off = 0.1f)
     {
+        var baseCell = cell;
         var vis = 0 == cell.y % 2 ? GridDefine.FirstAreaLineVisit : GridDefine.SecondAreaLineVisit;
         // _hexList[cell.y][cell.x].PoP();
         _hexList[cell.y][cell.x].SetType(BubbleType.None);
         
         var offDur = off;
         var newDur = 0f;
+        
+        var queue = GetBoomBubbles(baseCell, GridDefine.FirstAreaLineVisit, GridDefine.SecondAreaLineVisit);
         foreach (var vi in vis)
         {
             var newCell = cell + vi;
-            var row = 0 == newCell.y % 2 ? FirstLineCount : SecondLineCount;
-            if (newCell.x >= 0 && newCell.x < row &&
-                newCell.y >= 0 && newCell.y < _hexList.Count &&
-                false == _hexList[newCell.y][newCell.x].IsUnityNull())
+            if (Area(newCell))
             {
                 newDur = dur;
                 offDur =+ off;
                 _hexList[newCell.y][newCell.x].Pop(dur + offDur);
             }
         }
+        // BoomBubbles(queue, dur, offDur);
+        VisitClear();
         return newDur + offDur;
     }
     

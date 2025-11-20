@@ -1,6 +1,4 @@
-using System;
 using System.Threading.Tasks;
-using DG.Tweening;
 using UnityEngine;
 
 public class BubbleFallStep : IGameStep
@@ -13,7 +11,7 @@ public class BubbleFallStep : IGameStep
     public async void Enter()
     {
         var cell = Shooter._predictionBubble.Cell;
-        var dropCheck1 = 0f;
+        float dropCheck1;
         if (Shooter._predictionBubble.MyType == BubbleType.Energy)
             dropCheck1 = HexagonGrid.I.EnergyPopBubbles(cell, _dropDur, _off);
         else

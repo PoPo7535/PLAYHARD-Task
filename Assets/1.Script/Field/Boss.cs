@@ -1,7 +1,5 @@
 using System.Linq;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class Boss : MonoBehaviour
@@ -48,6 +46,7 @@ public class Boss : MonoBehaviour
         if (HexagonGrid.I.IsValid(line.Last()))
             return true;
 
+        // var type = 0 == Random.Range(0, 8) ? BubbleType.Boom : Bubble.GetRandomBubbleType;
         var type = Bubble.GetRandomBubbleType;
         HexagonGrid.I.SetBubble(null, line[0], type);
         var count = 1;

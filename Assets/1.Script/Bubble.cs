@@ -31,6 +31,9 @@ public class Bubble : SerializedMonoBehaviour
     }
     public void Pop(float dur = 1f)
     {
+        if (MyType == BubbleType.None)
+            return;
+
         if (false == GameStepManager.I.energy.canEnergyCharge)
         {
             HexagonGrid.I.SetBubble(null, Cell, BubbleType.None);
@@ -46,7 +49,7 @@ public class Bubble : SerializedMonoBehaviour
             () =>
             {
                 ObjectPoolManager.I.BubbleStarPool.Release(star);
-                GameStepManager.I.energy.AddEnergy(7, 2);
+                GameStepManager.I.energy.AddEnergy(5, 2);
             } );
         HexagonGrid.I.SetBubble(null, Cell, BubbleType.None);
         ObjectPoolManager.I.BubblePool.Release(this);
@@ -92,5 +95,6 @@ public enum BubbleType
     Bule,
     Yellow,
     Red,
-    Energy
+    Energy,
+    Boom
 }
