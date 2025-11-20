@@ -20,20 +20,28 @@ public class Bubble : SerializedMonoBehaviour
         _spriteRenderer.sprite = _typeSprites[type];
     }
 
-    public void Drop(float dur = 1f)
+    public void Drop(float dur, int score)
     {
         HexagonGrid.I.SetBubble(null, Cell, BubbleType.None);
 
-        Move(transform, 
-            new Vector3(0, -3, 0), 
-            dur, 
-            () => { ObjectPoolManager.I.BubblePool.Release(this); });
+        Move(transform,
+            GameStepManager.I.holePos, 
+            dur,
+            () =>
+            {
+                var scoreObj = ObjectPoolManager.I.BubbleScorePool.Get();
+                scoreObj.ShowScore(transform.position, score);
+                ObjectPoolManager.I.BubblePool.Release(this);
+            });
     }
-    public void Pop(float dur = 1f)
+    public void Pop(float dur, int score)
     {
         if (MyType == BubbleType.None)
             return;
 
+        var scoreObj = ObjectPoolManager.I.BubbleScorePool.Get();
+        scoreObj.ShowScore(transform.position, score);
+        
         if (false == GameStepManager.I.energy.IsActive)
         {
             HexagonGrid.I.SetBubble(null, Cell, BubbleType.None);
@@ -44,7 +52,7 @@ public class Bubble : SerializedMonoBehaviour
         star.Set(MyType);
         star.transform.position = transform.position;
         Move(star.transform, 
-            GameStepManager.I.energy.gamePos, 
+            Utile.RandomPointInCircle(GameStepManager.I.energy.gamePos, 0.3f), 
             dur,
             () =>
             {
@@ -55,7 +63,7 @@ public class Bubble : SerializedMonoBehaviour
         ObjectPoolManager.I.BubblePool.Release(this);
     }
 
-    private void Move(Transform tr, Vector3 endPos, float totalDuration, Action completeActive)
+    private static void Move(Transform tr, Vector3 endPos, float totalDuration, Action completeActive)
     {
         var startPos = tr.position;
         

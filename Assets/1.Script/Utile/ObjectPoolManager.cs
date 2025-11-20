@@ -3,17 +3,20 @@ using UnityEngine;
 using UnityEngine.Pool;
 using Utility;
 
-public class ObjectPoolManager : Singleton<ObjectPoolManager>
+public class ObjectPoolManager : LocalSingleton<ObjectPoolManager>
 {
     public ObjectPool<Bubble> BubblePool { get; private set; }
     public ObjectPool<BubbleStar> BubbleStarPool { get; private set; }
+    public ObjectPool<BubbleScore> BubbleScorePool { get; private set; }
     [SerializeField] private Bubble _bulletPrefab;
     [SerializeField] private BubbleStar _bulletStarPrefab;
+    [SerializeField] private BubbleScore _BubbleScorePrefab;
 
     public void Awake()
     {
         BubblePool = InitPool(_bulletPrefab, Bubble.Scale, Quaternion.identity);
         BubbleStarPool = InitPool(_bulletStarPrefab, Bubble.Scale, Quaternion.identity);
+        BubbleScorePool = InitPool(_BubbleScorePrefab, Bubble.Scale, Quaternion.identity);
         // InitBubblePool();
         // InitBubbleStarPool();
     }

@@ -51,7 +51,8 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
                 if (false == _hexVisitList[i][j] &&
                     true == _hexList[i][j])
                 {
-                    _hexList[i][j].Drop(dur + offDur);
+                    var score = _hexList[i][j].MyType == BubbleType.Boom ? ScoreHelper.DropBoomBubbleScore : ScoreHelper.DropBubbleScore;
+                    _hexList[i][j].Drop(dur + offDur, score);
                     offDur += off;
                     newDur = dur;
                 }
@@ -141,7 +142,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
     }
     public float ConnectedPopBubbles(Vector2Int cell, float dur, float off = 0.1f)
     {
-        var baseCell = cell;
+        // var baseCell = cell;
         var type = _hexList[cell.y][cell.x].MyType;
         var cellQueue = new Queue<Vector2Int>();
         var cellList = new List<Bubble>();
@@ -175,7 +176,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         {
             foreach (var bubble in cellList)
             {
-                bubble.Pop(dur + offDur);
+                bubble.Pop(dur + offDur,ScoreHelper.PopBubbleScore);
                 newDur = dur;
                 offDur =+ off;
             }
@@ -203,7 +204,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
             {
                 newDur = dur;
                 offDur =+ off;
-                _hexList[newCell.y][newCell.x].Pop(dur + offDur);
+                _hexList[newCell.y][newCell.x].Pop(dur + offDur, ScoreHelper.PopEnergyBubbleScore);
             }
         }
         // BoomBubbles(queue, dur, offDur);

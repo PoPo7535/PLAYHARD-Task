@@ -1,13 +1,26 @@
 using System;
 using UnityEngine;
 using Utility;
+using Random = UnityEngine.Random;
 
 public class GameStepManager : LocalSingleton<GameStepManager>
 {
     public BubbleShooter shooter;
     public BubbleEnergy energy;
     public Boss boss;
-    
+    [SerializeField] private GameObject _hole;
+    public Vector3 holePos
+    {
+        get
+        {
+            var pos = _hole.transform.position;
+            var offy =Random.Range(-0.1f, 0.1f);
+            var offx =Random.Range(-0.7f, 0.7f);
+
+            return new Vector3(offx, offy, 0) + pos;
+        }
+    }
+
     private GameStepType _currentStep;
     private IGameStep _aimStep;
     private IGameStep _bossStep;

@@ -31,11 +31,23 @@ public static class Utile
     }
     public static Vector3 UIToWorld(RectTransform ui)
     {
-        Vector2 screen = RectTransformUtility.WorldToScreenPoint(null, ui.position);
+        var screen = RectTransformUtility.WorldToScreenPoint(null, ui.position);
 
-        float z = Mathf.Abs(Camera.main.transform.position.z);
+        var z = Mathf.Abs(Camera.main.transform.position.z);
         return Camera.main.ScreenToWorldPoint(new Vector3(screen.x, screen.y, z));
     }
+    public static Vector2 RandomPointInCircle(Vector2 center, float radius)
+    {
+        var t = Random.value;              
+        var r = radius * Mathf.Sqrt(t);    
+        var angle = Random.Range(0f, Mathf.PI * 2f);
+
+        var x = center.x + r * Mathf.Cos(angle);
+        var y = center.y + r * Mathf.Sin(angle);
+
+        return new Vector2(x, y);
+    }
+    
     public static Vector2 UIToWorldSize(RectTransform rect)
     {
         var pixelSize = rect.rect.size;
