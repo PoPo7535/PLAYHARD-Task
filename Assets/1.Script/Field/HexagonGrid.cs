@@ -75,6 +75,17 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         }
     }
 
+    public void SpareBubblePop()
+    {
+        foreach (var bubbles in _hexList)
+        {
+            foreach (var bubble in bubbles)
+            {
+                if (false == bubble.IsUnityNull())
+                    bubble.Pop(50);
+            }
+        }
+    }
     // private Queue<Bubble> GetBoomBubbles(Vector2Int cell, Vector2Int[] first, Vector2Int[] second)
     // {
     //     Queue<Bubble> queue = new();

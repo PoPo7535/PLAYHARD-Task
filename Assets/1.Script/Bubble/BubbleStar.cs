@@ -15,12 +15,12 @@ public class BubbleStar : MonoBehaviour
     {
         return bubble switch
         {
-            BubbleType.None => Color.black,
+            BubbleType.None => Color.magenta,
             BubbleType.Bule => Color.blue,
             BubbleType.Yellow => Color.yellow,
             BubbleType.Red => Color.red,
-            BubbleType.Energy => Color.black,
-            _ => Color.black
+            BubbleType.Energy => Color.white,
+            _ => Color.magenta
         };
     }
 }

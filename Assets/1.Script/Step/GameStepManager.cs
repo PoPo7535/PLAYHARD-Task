@@ -26,6 +26,7 @@ public class GameStepManager : LocalSingleton<GameStepManager>
     private IGameStep _bossStep;
     private IGameStep _bubbleFallStep;
     private IGameStep _bubbleRefillStep;
+    private IGameStep _gameEndStpe;
 
     private void Start()
     {
@@ -40,6 +41,9 @@ public class GameStepManager : LocalSingleton<GameStepManager>
         
         var refillStep = new BubbleRefillStep();
         _bubbleRefillStep = refillStep;
+
+        var gameEndStpe = new GameEndStep();
+        _gameEndStpe = gameEndStpe;
         
         _currentStep = GameStepType.Aim;
     }
@@ -68,6 +72,7 @@ public class GameStepManager : LocalSingleton<GameStepManager>
             GameStepType.BubbleFall => _bubbleFallStep,
             GameStepType.Boss => _bossStep,
             GameStepType.BubbleRefill => _bubbleRefillStep,
+            GameStepType.GameEndStpe => _gameEndStpe,
             _ => null
         };
     }
@@ -100,4 +105,5 @@ public enum GameStepType
     BubbleFall,
     Boss,
     BubbleRefill,
+    GameEndStpe
 }

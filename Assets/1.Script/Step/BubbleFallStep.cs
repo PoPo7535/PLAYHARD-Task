@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class BubbleFallStep : IGameStep
@@ -27,7 +28,11 @@ public class BubbleFallStep : IGameStep
             ScoreHelper.ReSetCombo();
         }
         Shooter.activeControll = true;
-        GameStepManager.I.ChangeNextStep();
+        await UniTask.Delay(500);
+        if(false == GameStepManager.I.boss.IsDead)
+            GameStepManager.I.ChangeNextStep();
+        else
+            GameStepManager.I.ChangeStep(GameStepType.GameEndStpe);
     }
     public void Exit() { }
 }

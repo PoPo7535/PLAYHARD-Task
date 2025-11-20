@@ -30,6 +30,26 @@ public partial class BubbleShooter : IPointerDownHandler
         _bubbles[2].SetType(BubbleType.None);
     }
 
+    public async Task SpareBubbleToScore()
+    {
+        foreach (var bubble in _bubbles)
+        {
+            bubble.Pop(50);
+        }
+        for (int i = 0; i < 10; ++i)
+        {
+            await UniTask.Delay(300);
+            var bubble = ObjectPoolManager.I.BubblePool.Get();
+            bubble.SetType(Bubble.GetRandomBubbleType);
+            bubble.transform.position = transform.position;
+            var pos = Utile.RandomPointInCircle(new Vector3(0, 0, 0), 1);
+            var newNumber = i + 1;
+            bubble.transform.DOMove(pos, 1).OnComplete(() =>
+            {
+                bubble.Pop(1000 * (newNumber));
+            });
+        }
+    }
 
     public async void OnPointerDown(PointerEventData eventData)
     {
@@ -96,14 +116,7 @@ public partial class BubbleShooter : IPointerDownHandler
     }
     public async Task RefillBubble()
     {
-        if (predictionBubble.MyType == BubbleType.Energy)
-        {
-            await SwapBubble();
-            return;
-        }
-        
         activeControll = false;
-
         if (IsTwoBubble)
         {
             Scale(0);

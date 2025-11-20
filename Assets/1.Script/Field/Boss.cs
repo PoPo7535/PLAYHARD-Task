@@ -9,15 +9,17 @@ public class Boss : MonoBehaviour
     [SerializeField] private Image hpFill;
 
     private int _hp = 100;
+
     private int HP
     {
-        get=>_hp;
+        get => _hp;
         set
         {
             hpFill.fillAmount = value / 100f;
             _hp = value;
         }
     } 
+    public bool IsDead => _hp <= 0;
 
     public void Start()
     {

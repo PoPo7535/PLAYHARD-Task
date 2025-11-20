@@ -47,7 +47,7 @@ public class Bubble : SerializedMonoBehaviour
         HexagonGrid.I.SetBubble(null, Cell, BubbleType.None);
         ObjectPoolManager.I.BubblePool.Release(this);
         
-        Attack();
+        Attack(dur);
 
         if (false == GameStepManager.I.energy.IsActive)
             return;
@@ -64,7 +64,15 @@ public class Bubble : SerializedMonoBehaviour
             });
     }
 
-    private void Attack()
+    public void Pop(int score)
+    {
+        var scoreObj = ObjectPoolManager.I.BubbleScorePool.Get();
+        scoreObj.ShowScore(transform.position, score);
+        ObjectPoolManager.I.BubblePool.Release(this);
+        AttackObjRelease();
+    }
+
+    private void Attack(float dur)
     {
         if (false == isAttack)
             return;
@@ -74,11 +82,11 @@ public class Bubble : SerializedMonoBehaviour
         Utile.Move(
             _attackObj.transform,
             Utile.RandomPointInCircle(tr.position, 0.4f),
-            2f,
+            dur,
             () =>
             {
                 AttackObjRelease();
-                GameStepManager.I.boss.GetDamage(7);
+                GameStepManager.I.boss.GetDamage(100);
             },
             0.8f);
     }
