@@ -12,7 +12,8 @@ public class BubbleEnergy : MonoBehaviour
     [SerializeField] private Image _fillImg;
     [NonSerialized] public Vector3 gamePos;
     private bool IsFullEnergy => 100f <= Energy;
-    public bool canEnergyCharge = true;
+
+    public bool IsActive { get; private set; } = true;
     private float _energy;
     private float Energy
     {
@@ -32,7 +33,7 @@ public class BubbleEnergy : MonoBehaviour
     
     public void OnClick()
     {
-        if (false == canEnergyCharge)
+        if (false == IsActive)
             return;
         if (false == shooter.activeControll)
             return;
@@ -43,7 +44,7 @@ public class BubbleEnergy : MonoBehaviour
 
     private void SetEnergyBubble(int setEnergyIndex)
     {
-        ActiveEnergyImg(false);
+        SetActive(false);
         var bubble = ObjectPoolManager.I.BubblePool.Get();
         bubble.transform.position = gamePos;
         shooter.SetEnergyBubble(bubble, setEnergyIndex);
@@ -51,20 +52,20 @@ public class BubbleEnergy : MonoBehaviour
 
     public bool AddEnergy(int addEnergy, int setEnergyIndex)
     {
-        if (false == canEnergyCharge)
+        if (false == IsActive)
             return false;
         Energy += addEnergy;
         if (IsFullEnergy)
         {
             SetEnergyBubble(setEnergyIndex);
             Energy = 0;
-            canEnergyCharge = false;
             return true;
         }
         return false;
     }
-    private void ActiveEnergyImg(bool active)
+    public void SetActive(bool active)
     {
         _energyImg.rectTransform.DOScale(active ? Vector3.one : Vector3.zero, 0.3f);
+        IsActive = active;
     }
 }

@@ -96,7 +96,7 @@ public partial class BubbleShooter : IPointerDownHandler
     }
     public async Task RefillBubble()
     {
-        if (_predictionBubble.MyType == BubbleType.Energy)
+        if (predictionBubble.MyType == BubbleType.Energy)
         {
             await SwapBubble();
             return;

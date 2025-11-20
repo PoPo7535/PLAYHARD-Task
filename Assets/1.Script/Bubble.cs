@@ -34,7 +34,7 @@ public class Bubble : SerializedMonoBehaviour
         if (MyType == BubbleType.None)
             return;
 
-        if (false == GameStepManager.I.energy.canEnergyCharge)
+        if (false == GameStepManager.I.energy.IsActive)
         {
             HexagonGrid.I.SetBubble(null, Cell, BubbleType.None);
             ObjectPoolManager.I.BubblePool.Release(this);

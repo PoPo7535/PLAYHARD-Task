@@ -12,7 +12,7 @@ public class AimStep : IGameStep
         if (Input.GetMouseButtonUp(0) ||
             Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
         {
-            if (Shooter._predictionBubble.gameObject.activeSelf)
+            if (Shooter.predictionBubble.gameObject.activeSelf)
                 BubbleShot();
             Shooter.SetVisualsActive(false);
         }
@@ -37,16 +37,16 @@ public class AimStep : IGameStep
         bubble.transform.position = Shooter.transform.position;
         bubble.SetType(Shooter.CurrentBubbleType);
         Shooter.SetHandBubbleType(0, BubbleType.None);
-        bubble.transform.DOMove(HexagonGrid.I.GetPosToWorldPos(Shooter._hit[0].point), Shooter.shootSpeed)
+        bubble.transform.DOMove(HexagonGrid.I.GetPosToWorldPos(Shooter.hit[0].point), Shooter.shootSpeed)
             .SetSpeedBased()
             .SetEase(Ease.Linear).
             OnComplete(() =>
             {
-                bubble.transform.DOMove(Shooter._predictionBubble.transform.position, Shooter.shootSpeed)
+                bubble.transform.DOMove(Shooter.predictionBubble.transform.position, Shooter.shootSpeed)
                     .SetEase(Ease.Linear)
                     .SetSpeedBased().OnComplete(() =>
                     {
-                        var cell = Shooter._predictionBubble.Cell;
+                        var cell = Shooter.predictionBubble.Cell;
                         HexagonGrid.I.SetBubble(bubble, cell, bubble.MyType);
                         GameStepManager.I.ChangeNextStep();
                     });

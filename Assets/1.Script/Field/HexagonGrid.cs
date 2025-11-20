@@ -74,24 +74,24 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         }
     }
 
-    private Queue<Bubble> GetBoomBubbles(Vector2Int cell, Vector2Int[] first, Vector2Int[] second)
-    {
-        Queue<Bubble> queue = new();
-        var vis = 0 == cell.y % 2 ? first : second;
-        foreach (var vi in vis)
-        {
-            var newCell = cell + vi;
-            if (Area(newCell))
-            {
-                if (_hexList[newCell.y][newCell.x].MyType == BubbleType.Boom)
-                {
-                    queue.Enqueue(_hexList[newCell.y][newCell.x]);
-                    _hexVisitList[newCell.y][newCell.x] = true;
-                }
-            }
-        }
-        return queue;
-    }
+    // private Queue<Bubble> GetBoomBubbles(Vector2Int cell, Vector2Int[] first, Vector2Int[] second)
+    // {
+    //     Queue<Bubble> queue = new();
+    //     var vis = 0 == cell.y % 2 ? first : second;
+    //     foreach (var vi in vis)
+    //     {
+    //         var newCell = cell + vi;
+    //         if (Area(newCell))
+    //         {
+    //             if (_hexList[newCell.y][newCell.x].MyType == BubbleType.Boom)
+    //             {
+    //                 queue.Enqueue(_hexList[newCell.y][newCell.x]);
+    //                 _hexVisitList[newCell.y][newCell.x] = true;
+    //             }
+    //         }
+    //     }
+    //     return queue;
+    // }
 
     // private void BoomBubbles(Queue<Bubble> queue, float dur, float off)
     // {
@@ -187,7 +187,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
     }
     public float EnergyPopBubbles(Vector2Int cell,float dur, float off = 0.1f)
     {
-        var baseCell = cell;
+        // var baseCell = cell;
         var vis = 0 == cell.y % 2 ? GridDefine.FirstAreaLineVisit : GridDefine.SecondAreaLineVisit;
         // _hexList[cell.y][cell.x].PoP();
         _hexList[cell.y][cell.x].SetType(BubbleType.None);
@@ -195,7 +195,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
         var offDur = off;
         var newDur = 0f;
         
-        var queue = GetBoomBubbles(baseCell, GridDefine.FirstAreaLineVisit, GridDefine.SecondAreaLineVisit);
+        // var queue = GetBoomBubbles(baseCell, GridDefine.FirstAreaLineVisit, GridDefine.SecondAreaLineVisit);
         foreach (var vi in vis)
         {
             var newCell = cell + vi;
@@ -207,6 +207,7 @@ public class HexagonGrid : LocalSingleton<HexagonGrid>
             }
         }
         // BoomBubbles(queue, dur, offDur);
+        GameStepManager.I.energy.SetActive(true);
         VisitClear();
         return newDur + offDur;
     }
