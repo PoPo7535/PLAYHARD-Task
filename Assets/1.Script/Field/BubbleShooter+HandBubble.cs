@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Sirenix.OdinInspector;
+using TMPro;
 using UnityEngine;using UnityEngine.EventSystems;
 
 public partial class BubbleShooter : IPointerDownHandler
@@ -9,9 +9,10 @@ public partial class BubbleShooter : IPointerDownHandler
     private readonly Bubble[] _bubbles = new Bubble[3];
     private Vector3[] _threePos = new Vector3[3];
     private Vector3[] _threeAroundPos = new Vector3[3];
+    [SerializeField] private TMP_Text _bubbleCountText;
+    [SerializeField] private int _bubbleCount = 22;
     private bool IsTwoBubble => _bubbles[2].MyType == BubbleType.None;
     public BubbleType CurrentBubbleType => _bubbles[0].MyType;
-
 
     private void InitBubbles()
     {
@@ -36,7 +37,7 @@ public partial class BubbleShooter : IPointerDownHandler
         {
             bubble.Pop(50);
         }
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < _bubbleCount; ++i)
         {
             await UniTask.Delay(300);
             var bubble = ObjectPoolManager.I.BubblePool.Get();
@@ -114,8 +115,23 @@ public partial class BubbleShooter : IPointerDownHandler
         } 
         activeControll = true;
     }
+
+    public bool NoBubbles()
+    {
+        if (0 == _bubbleCount &&
+            _bubbles[0].MyType == BubbleType.None &&
+            _bubbles[1].MyType == BubbleType.None &&
+            _bubbles[2].MyType == BubbleType.None)
+            return true;
+        return false;
+    }
     public async Task RefillBubble()
     {
+        _bubbleCountText.text = _bubbleCount.ToString();
+        if (_bubbleCount == 0)
+            return;
+        --_bubbleCount;
+        
         activeControll = false;
         if (IsTwoBubble)
         {

@@ -17,7 +17,7 @@ public static class ScoreHelper
 
     public static void Init()
     {
-        _currentCombo = 0;
+        _currentCombo = 1;
         TotalScore = 0;
     }
 }

@@ -8,7 +8,10 @@ public class BubbleRefillStep : IGameStep
     public async void Enter()
     {
         await Shooter.RefillBubble();
-        GameStepManager.I.ChangeNextStep();
+        if (Shooter.NoBubbles())
+            GameStepManager.I.ChangeStep(GameStepType.GameEndStpe);
+        else
+            GameStepManager.I.ChangeNextStep();
     }
     public void Exit() { }
 }

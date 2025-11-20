@@ -23,6 +23,7 @@ public partial class BubbleShooter : MonoBehaviour
     {
         InitPredictionBubble();
         InitBubbles();
+        _bubbleCountText.text = _bubbleCount.ToString();
         _shotPos = transform.position + new Vector3(0, _sr.size.y / 2, 0);
     }
 
@@ -83,7 +84,7 @@ public partial class BubbleShooter : MonoBehaviour
 
         RaycastHit2D PointOffSet(RaycastHit2D hit)
         {
-            hit.point= new Vector2(hit.point.x, hit.point.y - (HexagonGrid.I.CellSize.y / 2));
+            hit.point = new Vector2(hit.point.x, hit.point.y - (HexagonGrid.I.CellSize.y / 2));
             return hit;
         }
     }

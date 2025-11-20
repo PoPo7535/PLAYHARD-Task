@@ -30,6 +30,7 @@ public class GameStepManager : LocalSingleton<GameStepManager>
 
     private void Start()
     {
+        ScoreHelper.Init();
         var aimStep = new AimStep();
         _aimStep = aimStep;
         

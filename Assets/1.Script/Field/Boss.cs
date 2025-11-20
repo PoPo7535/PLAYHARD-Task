@@ -48,7 +48,7 @@ public class Boss : MonoBehaviour
         // var type = 0 == Random.Range(0, 8) ? BubbleType.Boom : Bubble.GetRandomBubbleType;
         var type = Bubble.GetRandomBubbleType;
         var bubble = HexagonGrid.I.SetBubble(null, line[0], type);
-        if (0 == Random.Range(0, 5)) 
+        if (0 == Random.Range(0, 4)) 
             bubble.SetAttackBubble();
         var count = 1;
         for (int i = line.Length - 2; i >= 0; i--)

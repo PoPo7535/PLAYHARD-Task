@@ -86,7 +86,7 @@ public class Bubble : SerializedMonoBehaviour
             () =>
             {
                 AttackObjRelease();
-                GameStepManager.I.boss.GetDamage(100);
+                GameStepManager.I.boss.GetDamage(7);
             },
             0.8f);
     }
