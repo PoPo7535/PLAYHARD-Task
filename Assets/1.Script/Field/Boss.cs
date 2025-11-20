@@ -2,10 +2,23 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class Boss : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer hpFill;
+    [SerializeField] private Image hpFill;
+
+    private int _hp = 100;
+    private int HP
+    {
+        get=>_hp;
+        set
+        {
+            hpFill.fillAmount = value / 100f;
+            _hp = value;
+        }
+    } 
+
     public void Start()
     {
         _ = BubbleLineRefill(GridDefine.BossLeftLine);
@@ -14,7 +27,7 @@ public class Boss : MonoBehaviour
 
     public void GetDamage(int damage)
     {
-        
+        HP -= damage;
     }
 
     public async UniTask BubbleLineRefill()
